@@ -23,5 +23,5 @@
  -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:sl="/hudson/plugins/sidebar_link">
-    <f:optionalProperty title="${%Restrict build execution causes}" field="config"/>
+    <f:optionalProperty title="${%Restrict upstream causes}" field="upstreamCauseRestriction"/>
 </j:jelly>
