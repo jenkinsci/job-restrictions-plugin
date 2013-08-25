@@ -21,34 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Queue;
+import hudson.util.FormValidation;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
 /**
- * Takes any job.
+ *
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public class AnyJobRestriction extends JobRestriction {
+public class RegexNameRestriction extends JobRestriction {
+    String regexExpression;
+
     @DataBoundConstructor
-    public AnyJobRestriction() {
+    public RegexNameRestriction(String regexExpression) {
+        this.regexExpression = regexExpression;
     }
-    
+
+    public String getRegexExpression() {
+        return regexExpression;
+    }
+ 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        return true;
+        try {
+            return item.task.getName().matches(regexExpression);
+        } catch (PatternSyntaxException ex) {
+            return true; // Ignore invalid pattern
+        }
     }
     
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
-            return Messages.restrictions_Logic_Any();
+            return Messages.restrictions_Job_RegexName();
+        }
+        
+        public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
+            try {
+                Pattern.compile(regexExpression);
+            } catch (PatternSyntaxException exception) {
+                return FormValidation.error(exception.getDescription());
+            }
+            return FormValidation.ok(Messages.restrictions_Job_RegexName_OkMessage());
         }
     }
 }

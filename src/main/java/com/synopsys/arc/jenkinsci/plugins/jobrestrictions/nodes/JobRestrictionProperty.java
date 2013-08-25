@@ -32,6 +32,7 @@ import hudson.model.Queue;
 import hudson.model.queue.CauseOfBlockage;
 import hudson.slaves.NodeProperty;
 import hudson.slaves.NodePropertyDescriptor;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  *
@@ -41,6 +42,11 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
 
     /**Restriction according to buildable item requirements*/
     JobRestriction jobRestriction;
+
+    @DataBoundConstructor
+    public JobRestrictionProperty(JobRestriction jobRestriction) {
+        this.jobRestriction = jobRestriction;
+    }
     
     @Override
     public CauseOfBlockage canTake(Queue.BuildableItem item) {
@@ -50,7 +56,8 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
             }
         }
         
-        return null;
+        // Can take
+        return null; 
     }
 
     public JobRestriction getJobRestriction() {

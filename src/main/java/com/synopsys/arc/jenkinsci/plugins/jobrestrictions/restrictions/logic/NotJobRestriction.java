@@ -25,30 +25,38 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
+import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * Takes any job.
+ *
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public class AnyJobRestriction extends JobRestriction {
+public class NotJobRestriction extends JobRestriction {
+    JobRestriction restriction;
+
     @DataBoundConstructor
-    public AnyJobRestriction() {
+    public NotJobRestriction(JobRestriction restriction) {
+        this.restriction = restriction;
+    }
+
+    public JobRestriction getRestriction() {
+        return restriction;
     }
     
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        return true;
+        return !restriction.canTake(item);
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
-            return Messages.restrictions_Logic_Any();
+            return Messages.restrictions_Logic_Not();
         }
     }
 }
