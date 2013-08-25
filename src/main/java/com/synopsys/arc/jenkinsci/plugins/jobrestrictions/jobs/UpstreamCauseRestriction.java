@@ -21,68 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
+import hudson.AbortException;
 import hudson.Extension;
-import hudson.model.Queue;
-import hudson.model.Run;
-import hudson.util.FormValidation;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import hudson.model.Cause;
+import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
 /**
  *
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public class RegexNameRestriction extends JobRestriction {
-    String regexExpression;
+public class UpstreamCauseRestriction extends JobCauseRestriction<Cause.UpstreamCause> {
+
+    JobRestriction jobRestriction;
 
     @DataBoundConstructor
-    public RegexNameRestriction(String regexExpression) {
-        this.regexExpression = regexExpression;
+    public UpstreamCauseRestriction(JobRestriction jobRestriction) {
+        this.jobRestriction = jobRestriction;
     }
 
-    public String getRegexExpression() {
-        return regexExpression;
+    public JobRestriction getJobRestriction() {
+        return jobRestriction;
     }
- 
+   
     @Override
-    public boolean canTake(Queue.BuildableItem item) {
-        return canTake(item.task.getName());
+    public void validate(Cause.UpstreamCause cause) throws AbortException {
+       if (jobRestriction != null && !jobRestriction.canTake(cause.getUpstreamRun())) {
+           throw new AbortException("Job can't be executed due to upstream restrictions");
+       } 
     }
 
     @Override
-    public boolean canTake(Run run) {
-        return canTake(run.getParent().getName());
+    public Descriptor<JobCauseRestriction<? extends Cause>> getDescriptor() {
+        return DESCRIPTOR;
     }
-    
-    public boolean canTake(String projectName) {
-        try {
-            return projectName.matches(regexExpression);
-        } catch (PatternSyntaxException ex) {
-            return true; // Ignore invalid pattern
-        }
-    }
-    
+      
     @Extension
-    public static class DescriptorImpl extends JobRestrictionDescriptor {
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+    public static class DescriptorImpl extends JobCauseRestrictionDescriptor {
+
         @Override
         public String getDisplayName() {
-            return Messages.restrictions_Job_RegexName();
+            return Messages.jobs_CauseRestrictions_Upstream();
         }
         
-        public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
-            try {
-                Pattern.compile(regexExpression);
-            } catch (PatternSyntaxException exception) {
-                return FormValidation.error(exception.getDescription());
-            }
-            return FormValidation.ok(Messages.restrictions_Job_RegexName_OkMessage());
-        }
     }
 }

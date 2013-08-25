@@ -29,6 +29,7 @@ import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.Jo
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
+import hudson.model.Run;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -59,6 +60,11 @@ public class AndJobRestriction extends JobRestriction {
         return first.canTake(item) && second.canTake(item);
     }
 
+    @Override
+    public boolean canTake(Run run) {
+        return first.canTake(run) && second.canTake(run);
+    }
+    
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override

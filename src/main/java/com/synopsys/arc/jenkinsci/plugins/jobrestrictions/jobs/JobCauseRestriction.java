@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Synopsys Inc., Oleg Nenashev <nenashev@synopsys.com> 
+ * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,42 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic.AnyJobRestriction;
-import hudson.DescriptorExtensionList;
-import hudson.ExtensionPoint;
+import hudson.AbortException;
+import hudson.model.Cause;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Queue;
-import hudson.model.Run;
-import java.io.Serializable;
-import jenkins.model.Jenkins;
 
 /**
  *
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public abstract class JobRestriction implements ExtensionPoint, Describable<JobRestriction>, Serializable {
+public abstract class JobCauseRestriction<TCause extends Cause>  
+    implements Describable<JobCauseRestriction<? extends Cause>>  {
     
-    public static final JobRestriction DEFAULT = new AnyJobRestriction();
+    public abstract void validate (TCause cause) throws AbortException;
     
+    public abstract static class JobCauseRestrictionDescriptor extends Descriptor<JobCauseRestriction<? extends Cause>> {
     
-    public abstract boolean canTake(Queue.BuildableItem item);
-    
-    
-    public abstract boolean canTake(Run run);
-
-    @Override
-    public JobRestrictionDescriptor getDescriptor() {
-        return (JobRestrictionDescriptor) Jenkins.getInstance().getDescriptorOrDie(getClass());
-    }
-
-    /**
-     * Get list of all registered {@link JobRestriction}s.
-     * @return List of {@link UserMacroExtension}s.
-     */    
-    public static DescriptorExtensionList<JobRestriction,Descriptor<JobRestriction>> all() {
-        return Jenkins.getInstance().<JobRestriction,Descriptor<JobRestriction>>getDescriptorList(JobRestriction.class);
     }
 }

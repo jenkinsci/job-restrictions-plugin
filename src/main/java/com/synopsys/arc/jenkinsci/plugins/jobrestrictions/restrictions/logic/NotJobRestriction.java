@@ -29,6 +29,7 @@ import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.Jo
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
+import hudson.model.Run;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -40,7 +41,7 @@ public class NotJobRestriction extends JobRestriction {
 
     @DataBoundConstructor
     public NotJobRestriction(JobRestriction restriction) {
-        this.restriction = restriction;
+        this.restriction = restriction != null ? restriction : DEFAULT;
     }
 
     public JobRestriction getRestriction() {
@@ -50,6 +51,11 @@ public class NotJobRestriction extends JobRestriction {
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         return !restriction.canTake(item);
+    }
+
+    @Override
+    public boolean canTake(Run run) {
+        return !restriction.canTake(run);
     }
 
     @Extension
