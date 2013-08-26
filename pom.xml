@@ -6,7 +6,7 @@
             <version>1.509.2</version>
     </parent>
 
-    <groupId>com.synopsys.arc.jenkinsci</groupId>
+    <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
     <artifactId>job-restrictions</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>Job Restrictions</name>
