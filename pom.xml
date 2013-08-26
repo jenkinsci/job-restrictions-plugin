@@ -12,7 +12,7 @@
     <name>Job Restrictions</name>
     <description>Provides Additional options to restrict jobs execution</description>
     <packaging>hpi</packaging>
-    <url></url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Job+Restrictions+Plugin</url>
 
     <properties>
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
