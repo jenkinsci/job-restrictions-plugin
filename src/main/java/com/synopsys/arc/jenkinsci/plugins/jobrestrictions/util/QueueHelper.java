@@ -21,23 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
-import hudson.AbortException;
-import hudson.model.Cause;
-import hudson.model.Describable;
-import hudson.model.Descriptor;
+import hudson.matrix.MatrixConfiguration;
+import hudson.model.Queue;
 
 /**
- *
+ * Provides additional for Queue objects.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public abstract class JobCauseRestriction<TCause extends Cause>  
-    implements Describable<JobCauseRestriction<? extends Cause>>  {
-    
-    public abstract void validate (TCause cause) throws AbortException;
-    
-    public abstract static class JobCauseRestrictionDescriptor extends Descriptor<JobCauseRestriction<? extends Cause>> {
-        // Empty class
+public class QueueHelper {
+    /**
+     * Generates job-style project name for the buildable item
+     * @deprecated Just a hack, will be removed in the future versions
+     * @param item
+     * @return String in the Job::getFullName() format (a/b/c/d)
+     */
+    public static String getFullName(Queue.BuildableItem item) {
+        Queue.Task current = item.task;
+        String res = current.getName();
+        
+        //HACK for the MultiConfigs
+        if (current instanceof MatrixConfiguration) {
+            MatrixConfiguration stub = (MatrixConfiguration)current;
+            return stub.getFullName();
+        }
+        
+        // Default approach via interface
+        while (true) {
+            Queue.Task parent = current.getOwnerTask();
+            if (parent == current || parent == null) {
+                break;
+            }          
+            res = parent.getName() + "/" + res;
+            current = parent;
+        }        
+        return res;
     }
 }

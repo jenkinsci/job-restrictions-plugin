@@ -26,6 +26,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.QueueHelper;
 import hudson.Extension;
 import hudson.model.Queue;
 import hudson.model.Run;
@@ -53,12 +54,13 @@ public class RegexNameRestriction extends JobRestriction {
  
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        return canTake(item.task.getName());
+        //FIXME: switch to  the "getFullName" in the future
+        return canTake(QueueHelper.getFullName(item));
     }
-
+    
     @Override
     public boolean canTake(Run run) {
-        return canTake(run.getParent().getName());
+        return canTake(run.getParent().getFullName());
     }
     
     public boolean canTake(String projectName) {
