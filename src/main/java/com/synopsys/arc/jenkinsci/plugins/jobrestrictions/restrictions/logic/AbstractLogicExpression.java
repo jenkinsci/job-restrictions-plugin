@@ -23,38 +23,27 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
-import hudson.Extension;
 import hudson.model.Queue;
 import hudson.model.Run;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * Takes any job.
+ * Provides logic wrapper for all expressions, 
+ * which don't utilize contents of RunnableItems.
+ * @deprecated In the current state, this class is just a stub for future.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
-public class AnyJobRestriction extends JobRestriction {
-    @DataBoundConstructor
-    public AnyJobRestriction() {
-    }
-    
-    @Override
-    public boolean canTake(Queue.BuildableItem item) {
-        return true;
-    }
+abstract class AbstractLogicExpression extends JobRestriction {
 
     @Override
     public boolean canTake(Run run) {
-        return true;
+        throw new UnsupportedOperationException("Not supported yet."); 
+    } 
+
+    @Override
+    public boolean canTake(Queue.BuildableItem item) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-        
-    @Extension
-    public static class DescriptorImpl extends JobRestrictionDescriptor {
-        @Override
-        public String getDisplayName() {
-            return Messages.restrictions_Logic_Any();
-        }
-    }
+    
+    //TODO: add a generalized canTake method
 }
