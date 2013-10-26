@@ -21,53 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import hudson.AbortException;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
-import hudson.model.Cause;
-import hudson.model.Descriptor;
+import hudson.model.Queue;
+import hudson.model.Run;
+import java.util.ArrayList;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * Allows to restrict execution according to upstream cause.
+ * Implements "And" condition with multiple entries.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @since 0.2
  */
-public class UpstreamCauseRestriction extends JobCauseRestriction<Cause.UpstreamCause> {
-
-    JobRestriction jobRestriction;
+public class MultipleAndJobRestriction extends JobRestriction {
+    private final ArrayList<JobRestriction> restrictions;
 
     @DataBoundConstructor
-    public UpstreamCauseRestriction(JobRestriction jobRestriction) {
-        this.jobRestriction = jobRestriction;
+    public MultipleAndJobRestriction(ArrayList<JobRestriction> restrictions) {
+        this.restrictions = restrictions != null ? restrictions : new ArrayList<JobRestriction>();
     }
 
-    public JobRestriction getJobRestriction() {
-        return jobRestriction;
+    public ArrayList<JobRestriction> getRestrictions() {
+        return restrictions;
     }
-   
+    
     @Override
-    public void validate(Cause.UpstreamCause cause) throws AbortException {
-       if (jobRestriction != null && !jobRestriction.canTake(cause.getUpstreamRun())) {
-           throw new AbortException("Job can't be executed due to upstream restrictions");
-       } 
+    public boolean canTake(Run run) {
+        for (JobRestriction restriction : restrictions) {
+            if (!restriction.canTake(run)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    public Descriptor<JobCauseRestriction<? extends Cause>> getDescriptor() {
-        return DESCRIPTOR;
+    public boolean canTake(Queue.BuildableItem item) {
+        for (JobRestriction restriction : restrictions) {
+            if (!restriction.canTake(item)) {
+                return false;
+            }
+        }
+        return true;
     }
-      
+    
     @Extension
-    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
-    public static class DescriptorImpl extends JobCauseRestrictionDescriptor {
-
+    public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
-            return Messages.jobs_CauseRestrictions_Upstream();
+            return Messages.restrictions_Logic_And() +" "+ Messages.restirctions_Stuff_MultipleSuffix();
         }
-        
     }
 }

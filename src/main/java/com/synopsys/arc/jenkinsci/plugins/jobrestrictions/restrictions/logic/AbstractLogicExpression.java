@@ -1,7 +1,7 @@
-<!--
+/*
  * The MIT License
  *
- * Copyright 2013 Synopsys Inc., Oleg Nenashev <nenashev@synopsys.com>
+ * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,30 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- -->
-<?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:sl="/hudson/plugins/sidebar_link">
-    <f:nested>
-        <table>
-            <f:optionalProperty title="${%Restrict upstream jobs}" field="upstreamCauseRestriction"/>
-        </table>
-    </f:nested>
-</j:jelly>
+ */
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
+
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
+import hudson.model.Queue;
+import hudson.model.Run;
+
+/**
+ * Provides logic wrapper for all expressions, 
+ * which don't utilize contents of RunnableItems.
+ * @deprecated In the current state, this class is just a stub for future.
+ * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ */
+abstract class AbstractLogicExpression extends JobRestriction {
+
+    @Override
+    public boolean canTake(Run run) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    } 
+
+    @Override
+    public boolean canTake(Queue.BuildableItem item) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    //TODO: add a generalized canTake method
+}

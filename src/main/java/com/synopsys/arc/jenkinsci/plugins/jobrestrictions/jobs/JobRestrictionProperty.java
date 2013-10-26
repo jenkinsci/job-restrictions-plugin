@@ -51,15 +51,18 @@ public class JobRestrictionProperty extends JobProperty {
         return config;
     }
     
+    
+    
     @Override
     public boolean prebuild(AbstractBuild build, BuildListener listener) {
         // Consider build as valid if any cause is valid
         for ( Object cause : build.getCauses() ) {
            try {
-            validateCause((Cause)cause, listener);
+               validateCause((Cause)cause, listener);
            } catch (AbortException ex) {
-               //TODO: Throw Aborted upstairs in the future
-               listener.fatalError("[Job Restrictions] - Build will be aborted: "+ex.getMessage());
+               //TODO: Throw AbortedException upstairs after fix of https://issues.jenkins-ci.org/browse/JENKINS-19497
+               String message = "[Job Restrictions] - Build will be aborted: "+ex.getMessage();
+               listener.fatalError(message);
                return false;
            }
         }
@@ -84,7 +87,6 @@ public class JobRestrictionProperty extends JobProperty {
         @Override
         public boolean isApplicable(Class<? extends Job> jobType) {
             return true;
-        }
-        
+        }     
     }
 }

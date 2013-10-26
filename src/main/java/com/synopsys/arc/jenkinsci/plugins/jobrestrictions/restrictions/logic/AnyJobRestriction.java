@@ -49,9 +49,7 @@ public class AnyJobRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return true;
     }
-    
-    
-    
+        
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override

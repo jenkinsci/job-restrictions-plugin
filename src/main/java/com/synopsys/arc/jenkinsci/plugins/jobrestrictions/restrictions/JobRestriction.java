@@ -31,6 +31,7 @@ import hudson.model.Descriptor;
 import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
+import java.util.List;
 import jenkins.model.Jenkins;
 
 /**
@@ -59,4 +60,14 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
     public static DescriptorExtensionList<JobRestriction,Descriptor<JobRestriction>> all() {
         return Jenkins.getInstance().<JobRestriction,Descriptor<JobRestriction>>getDescriptorList(JobRestriction.class);
     }
+    
+    /**
+     * Returns list of JobRestriction descriptors.
+     * @return List of available descriptors.
+     * @since 0.2
+     */
+    public static List<Descriptor<JobRestriction>> allDescriptors() {
+        return Jenkins.getInstance().getDescriptorList(JobRestriction.class).reverseView();
+    }
+    
 }
