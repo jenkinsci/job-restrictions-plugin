@@ -26,65 +26,46 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import hudson.AbortException;
 import hudson.Extension;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.Cause;
-import hudson.model.Job;
-import hudson.model.JobProperty;
-import hudson.model.JobPropertyDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- *
+ * Allows to restrict execution of job for {@link Cause.UserIdCause}.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @since 0.2
  */
-public class JobRestrictionProperty extends JobProperty {
-    
-    JobRestrictionPropertyConfig config;
+public class UserIdCauseRestriction extends JobCauseRestriction<Cause.UserIdCause>  {
+    boolean prohibitManualLaunch;
 
     @DataBoundConstructor
-    public JobRestrictionProperty(JobRestrictionPropertyConfig config) {
-        this.config = config;
+    public UserIdCauseRestriction(boolean prohibitManualLaunch) {
+        this.prohibitManualLaunch = prohibitManualLaunch;
     }
 
-    public JobRestrictionPropertyConfig getConfig() {
-        return config;
+    public boolean isProhibitManualLaunch() {
+        return prohibitManualLaunch;
     }
-        
+
     @Override
-    public boolean prebuild(AbstractBuild build, BuildListener listener) {
-        // Consider build as valid if any cause is valid
-        for ( Object cause : build.getCauses() ) {
-           try {
-               validateCause((Cause)cause, listener);
-           } catch (AbortException ex) {
-               //TODO: Throw AbortedException upstairs after fix of https://issues.jenkins-ci.org/browse/JENKINS-19497
-               String message = "[Job Restrictions] - Build will be aborted: "+ex.getMessage();
-               listener.fatalError(message);
-               return false;
-           }
+    public void validate(Cause.UserIdCause cause) throws AbortException {
+        if (prohibitManualLaunch) {
+            throw new AbortException(Messages.jobs_CauseRestrictions_UserID_prohibitedMessage());
         }
-
-        // Build is valid
-        return true;
     }
     
-    private void validateCause(Cause cause, BuildListener listener) throws AbortException { 
-       if (config != null) {
-           config.validateCause(cause, listener);
-       }
+    @Override
+    public DescriptorImpl getDescriptor() {
+        return DESCRIPTOR;
     }
-       
+    
     @Extension
-    public static class DescriptorImpl extends JobPropertyDescriptor {
-        @Override
-        public String getDisplayName() {
-            return Messages.jobs_JobRestrictionProperty_DisplayName();
-        }
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+    public static class DescriptorImpl extends JobCauseRestrictionDescriptor {
 
         @Override
-        public boolean isApplicable(Class<? extends Job> jobType) {
-            return true;
-        }     
+        public String getDisplayName() {
+            return Messages.jobs_CauseRestrictions_UserID_displayName();
+        }
+        
     }
 }

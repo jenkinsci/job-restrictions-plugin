@@ -23,10 +23,8 @@
  -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:sl="/hudson/plugins/sidebar_link">
-    <f:nested>
-        <table>
-            <f:optionalProperty title="${%Restrict triggering from upstream jobs}" field="upstreamCauseRestriction"/>
-            <f:optionalProperty title="${%Restrict manual builds submission}" field="userIdCauseRestriction"/>
-        </table>     
-    </f:nested>
+    <f:entry title="${%Disable for All}" field="prohibitManualLaunch">
+        <f:checkbox checked="${it.prohibitManualLaunch}" 
+                    title="${%Prohibits manual launch of the job for all users}"/>
+    </f:entry>
 </j:jelly>

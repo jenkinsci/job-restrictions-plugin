@@ -37,20 +37,32 @@ import org.kohsuke.stapler.DataBoundConstructor;
  */
 public class JobRestrictionPropertyConfig implements Describable<JobRestrictionPropertyConfig> {
     UpstreamCauseRestriction upstreamCauseRestriction;
+    UserIdCauseRestriction userIdCauseRestriction;
 
     @DataBoundConstructor
-    public JobRestrictionPropertyConfig(UpstreamCauseRestriction upstreamCauseRestriction) {
+    public JobRestrictionPropertyConfig(
+            UpstreamCauseRestriction upstreamCauseRestriction,
+            UserIdCauseRestriction userIdCauseRestriction) {
         this.upstreamCauseRestriction = upstreamCauseRestriction;
+        this.userIdCauseRestriction = userIdCauseRestriction;
     }
 
     public UpstreamCauseRestriction getUpstreamCauseRestriction() {
         return upstreamCauseRestriction;
     }
-    
+
+    public UserIdCauseRestriction getUserIdCauseRestriction() {
+        return userIdCauseRestriction;
+    }
+
     public void validateCause(Cause cause, BuildListener listener) throws AbortException { 
        if (upstreamCauseRestriction != null && cause instanceof Cause.UpstreamCause) {
            upstreamCauseRestriction.validate((Cause.UpstreamCause)cause);
        }    
+       
+       if (userIdCauseRestriction != null && cause instanceof Cause.UserIdCause) {
+           userIdCauseRestriction.validate((Cause.UserIdCause)cause);
+       }
        //TODO: checks
        
     }
