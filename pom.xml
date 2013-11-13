@@ -1,49 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>plugin</artifactId>
-            <version>1.509.2</version>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.509.2</version>
     </parent>
 
     <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
     <artifactId>job-restrictions</artifactId>
-    <version>0.3-SNAPSHOT</version>
-    <name>Job Restrictions</name>
+    <version>0.2.1-SNAPSHOT</version>
+    <name>Jenkins Job Restrictions Plugin</name>
     <description>Provides Additional options to restrict jobs execution</description>
     <packaging>hpi</packaging>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Job+Restrictions+Plugin</url>
 
     <properties>
-            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </repository>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <developers>
-            <developer>
-                    <id>oleg_nenashev</id>
-                    <name>Oleg Nenashev</name>
-                    <email>nenashev@synopsys.com; o.v.nenashev@gmail.com</email>
-                    <organizationUrl>http://www.synopsys.com</organizationUrl>
-                    <organization>Synopsys Inc.</organization>              			
-                    <roles>
-                            <role>maintainer</role>
-                    </roles>
-                    <timezone>+4</timezone>
-            </developer>
+        <developer>
+            <id>oleg_nenashev</id>
+            <name>Oleg Nenashev</name>
+            <email>nenashev@synopsys.com; o.v.nenashev@gmail.com</email>
+            <organizationUrl>http://www.synopsys.com</organizationUrl>
+            <organization>Synopsys Inc.</organization>              			
+            <roles>
+                <role>maintainer</role>
+            </roles>
+            <timezone>+4</timezone>
+        </developer>
     </developers>
 
     <scm>
