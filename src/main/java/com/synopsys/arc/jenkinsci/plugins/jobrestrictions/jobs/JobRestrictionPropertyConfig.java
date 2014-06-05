@@ -29,10 +29,11 @@ import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import javax.annotation.Nonnull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- *
+ * Stores the configuration for {@link JobRestrictionProperty}.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public class JobRestrictionPropertyConfig implements Describable<JobRestrictionPropertyConfig> {
@@ -55,7 +56,7 @@ public class JobRestrictionPropertyConfig implements Describable<JobRestrictionP
         return userIdCauseRestriction;
     }
 
-    public void validateCause(Cause cause, BuildListener listener) throws AbortException { 
+    public void validateCause(@Nonnull Cause cause, @Nonnull BuildListener listener) throws AbortException { 
        if (upstreamCauseRestriction != null && cause instanceof Cause.UpstreamCause) {
            upstreamCauseRestriction.validate((Cause.UpstreamCause)cause);
        }    

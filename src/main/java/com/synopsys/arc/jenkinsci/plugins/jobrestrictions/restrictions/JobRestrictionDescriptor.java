@@ -27,7 +27,7 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic.Any
 import hudson.model.Descriptor;
 
 /**
- *
+ * Descriptor class for {@link JobRestriction}s.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public abstract class JobRestrictionDescriptor extends Descriptor<JobRestriction> {

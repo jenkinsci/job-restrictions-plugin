@@ -29,7 +29,8 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 
 /**
- *
+ * Restricts the job execution according to the build cause.
+ * @param <TCause> A cause type to be checked
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public abstract class JobCauseRestriction<TCause extends Cause>  

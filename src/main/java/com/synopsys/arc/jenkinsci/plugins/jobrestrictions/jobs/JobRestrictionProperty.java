@@ -35,7 +35,7 @@ import hudson.model.JobPropertyDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- *
+ * A {@link NodeProperty}, which manages {@link JobRestriction}s for {@link AbstractBuild}s.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public class JobRestrictionProperty extends JobProperty {

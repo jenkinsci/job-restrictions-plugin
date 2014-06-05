@@ -28,25 +28,40 @@ import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.model.Node;
 import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.Nonnull;
 import jenkins.model.Jenkins;
 
 /**
- *
+ * The extension point, which allows to restrict job executions.
+ * 
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public abstract class JobRestriction implements ExtensionPoint, Describable<JobRestriction>, Serializable {
     
     public static final JobRestriction DEFAULT = new AnyJobRestriction();
     
-    
-    public abstract boolean canTake(Queue.BuildableItem item);
-    
-    
-    public abstract boolean canTake(Run run);
+    /**
+     * Check if the {@link Queue} item can be taken.
+     * This method is being used to check if the {@link Node} can take the
+     * specified job. If the job cannot be taken, Jenkins will try to launch 
+     * the job on other nodes.
+     * @param item An item to be checked
+     * @return true if the node can take the item
+     */
+    public abstract boolean canTake(@Nonnull Queue.BuildableItem item);
+        
+    /**
+     * Check if the {@link Job} can be executed according to the specified {@link Run}.
+     * If the job cannot be executed, it will be aborted by the plugin.
+     * @param run A {@link Run} to be checked 
+     * @return true if the build can be executed
+     */
+    public abstract boolean canTake(@Nonnull Run run);
 
     @Override
     public JobRestrictionDescriptor getDescriptor() {
@@ -55,19 +70,20 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
 
     /**
      * Get list of all registered {@link JobRestriction}s.
-     * @return List of {@link UserMacroExtension}s.
+     * @return List of {@link JobRestriction}s.
      */    
-    public static DescriptorExtensionList<JobRestriction,Descriptor<JobRestriction>> all() {
-        return Jenkins.getInstance().<JobRestriction,Descriptor<JobRestriction>>getDescriptorList(JobRestriction.class);
+    public static DescriptorExtensionList<JobRestriction,JobRestrictionDescriptor> all() {
+        return Jenkins.getInstance().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
+            (JobRestriction.class);
     }
     
     /**
-     * Returns list of JobRestriction descriptors.
+     * Returns list of {@link JobRestrictionDescriptor}s.
      * @return List of available descriptors.
      * @since 0.2
      */
-    public static List<Descriptor<JobRestriction>> allDescriptors() {
-        return Jenkins.getInstance().getDescriptorList(JobRestriction.class).reverseView();
+    public static List<JobRestrictionDescriptor> allDescriptors() {
+        return all().reverseView();
     }
     
 }

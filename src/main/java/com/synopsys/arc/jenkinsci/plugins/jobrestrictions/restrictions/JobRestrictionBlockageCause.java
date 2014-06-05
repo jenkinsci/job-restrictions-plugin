@@ -26,7 +26,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
 import hudson.model.queue.CauseOfBlockage;
 
 /**
- *
+ * A specific blockage cause for {@link JobRestriction}s.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public class JobRestrictionBlockageCause extends CauseOfBlockage {

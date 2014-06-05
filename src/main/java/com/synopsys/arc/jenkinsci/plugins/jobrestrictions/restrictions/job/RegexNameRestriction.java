@@ -37,21 +37,27 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 /**
- *
+ * Restricts the jobs execution by applying regular expressions to their names.
  * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
  */
 public class RegexNameRestriction extends JobRestriction {
     String regexExpression;
-
+    boolean checkShortName;
+    
     @DataBoundConstructor
-    public RegexNameRestriction(String regexExpression) {
+    public RegexNameRestriction(String regexExpression, boolean checkShortName) {
         this.regexExpression = regexExpression;
+        this.checkShortName = checkShortName;
     }
 
     public String getRegexExpression() {
         return regexExpression;
     }
- 
+
+    public boolean isCheckShortName() {
+        return checkShortName;
+    }
+    
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         //FIXME: switch to  the "getFullName" in the future
