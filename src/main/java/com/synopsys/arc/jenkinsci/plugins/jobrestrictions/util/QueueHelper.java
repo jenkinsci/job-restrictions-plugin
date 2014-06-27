@@ -23,7 +23,7 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
-import hudson.matrix.MatrixConfiguration;
+import hudson.model.Item;
 import hudson.model.Queue;
 
 /**
@@ -41,9 +41,9 @@ public class QueueHelper {
         Queue.Task current = item.task;
         String res = current.getName();
         
-        //HACK for the MultiConfigs
-        if (current instanceof MatrixConfiguration) {
-            MatrixConfiguration stub = (MatrixConfiguration)current;
+        //Fetching the full path of the item
+        if (current instanceof Item) {
+            Item stub = (Item)current;
             return stub.getFullName();
         }
         
