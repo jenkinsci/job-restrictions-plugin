@@ -26,13 +26,17 @@
     xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
     xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
     
-    <f:entry title="${%Users list}"> 
+    <f:entry title="${%usersList}"> 
         <f:repeatableProperty field="usersList" add="${%Add user}"/>  
     </f:entry>
-    <f:entry field="checkUsersFromUpstremProjects">
-        <f:checkbox title="${%Accept upstream runs started by users}" checked="${it.checkUsersFromUpstremProjects}"/>
+    <f:entry field="checkUsersFromUpstreamProjects">
+        <f:checkbox title="${%checkUsersFromUpstreamProjects}" checked="${it.checkUsersFromUpstreamProjects}"/>
     </f:entry>
-    <f:entry field="acceptAutomaticRuns">
+    <f:entry field="acceptAnonymousUsers">
+        <f:checkbox title="${%acceptAnonymousUsers}" checked="${it.acceptAnonymousUsers}"/>
+    </f:entry>
+    
+  <!--  <f:entry field="acceptAutomaticRuns">
         <f:checkbox title="${%Accept runs started by other causes}" checked="${it.acceptAutomaticRuns}"/>
-    </f:entry>
+    </f:entry> -->
 </j:jelly>

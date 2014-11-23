@@ -35,6 +35,7 @@ import hudson.model.Run;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -46,29 +47,36 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class StartedByUserRestriction  extends JobRestriction {
     
     private final List<UserSelector> usersList; 
-    private final boolean checkUsersFromUpstremProjects;
-    private final boolean acceptAutomaticRuns;
+    private final boolean checkUsersFromUpstreamProjects;
+    private final @Deprecated boolean acceptAutomaticRuns;
+    private final boolean acceptAnonymousUsers;
     private transient Set<String> acceptedUsers = null;
 
     @DataBoundConstructor
-    public StartedByUserRestriction(List<UserSelector> usersList, boolean checkUsersFromUpstremProjects, boolean acceptAutomaticRuns) {
+    public StartedByUserRestriction(List<UserSelector> usersList, boolean checkUsersFromUpstreamProjects, 
+            boolean acceptAutomaticRuns, boolean acceptAnonymousUsers) {
         this.usersList = usersList;
-        this.checkUsersFromUpstremProjects = checkUsersFromUpstremProjects;
+        this.checkUsersFromUpstreamProjects = checkUsersFromUpstreamProjects;
         this.acceptAutomaticRuns = acceptAutomaticRuns;
+        this.acceptAnonymousUsers = acceptAnonymousUsers;
     }
 
     public List<UserSelector> getUsersList() {
         return usersList;
     }
 
-    public boolean isAcceptAutomaticRuns() {
+    public @Deprecated boolean isAcceptAutomaticRuns() {
         return acceptAutomaticRuns;
     }
 
-    public boolean isCheckUsersFromUpstremProjects() {
-        return checkUsersFromUpstremProjects;
+    public boolean isCheckUsersFromUpstreamProjects() {
+        return checkUsersFromUpstreamProjects;
     }
-    
+
+    public boolean isAcceptAnonymousUsers() {
+        return acceptAnonymousUsers;
+    }
+        
     private synchronized @Nonnull Set<String> getAcceptedUsers() {
         if (acceptedUsers == null) {
             final List<UserSelector> selectors = getUsersList();
@@ -80,19 +88,21 @@ public class StartedByUserRestriction  extends JobRestriction {
         return acceptedUsers;
     }
     
-    private boolean acceptsUser(String userId) {
-        return getAcceptedUsers().contains(userId);
+    private boolean acceptsUser(@CheckForNull String userId) {
+        return userId == null
+                ? acceptAnonymousUsers
+                : getAcceptedUsers().contains(userId);
     }
     
     /**package*/ boolean canTake(@Nonnull List<Cause> causes) {
         for (Cause cause : causes) {
             if (cause instanceof Cause.UserIdCause) {
-                String startedBy = ((Cause.UserIdCause)cause).getUserId();
+                final @CheckForNull String startedBy = ((Cause.UserIdCause)cause).getUserId();
                 if (acceptsUser(startedBy)) {
                     return true;
                 }
             }
-            if (checkUsersFromUpstremProjects && cause instanceof Cause.UpstreamCause) {
+            if (checkUsersFromUpstreamProjects && cause instanceof Cause.UpstreamCause) {
                 final List<Cause> upstreamCauses = ((Cause.UpstreamCause)cause).getUpstreamCauses();
                 if (canTake(upstreamCauses)) { // Recursive call to iterate through all causes
                     return true;
@@ -118,7 +128,7 @@ public class StartedByUserRestriction  extends JobRestriction {
         
         @Override
         public String getDisplayName() {
-            return Messages.restrictions_Job_RegexName();
+            return Messages.restrictions_Job_StartedByUserRestriction_displayName();
         }
     }
 }
