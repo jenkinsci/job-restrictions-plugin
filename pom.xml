@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.509.2</version>
+        <version>1.588</version>
     </parent>
 
     <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
