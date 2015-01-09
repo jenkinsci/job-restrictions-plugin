@@ -29,6 +29,7 @@ import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.Cause;
 import hudson.model.Descriptor;
+import hudson.model.Run;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -38,19 +39,38 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class UpstreamCauseRestriction extends JobCauseRestriction<Cause.UpstreamCause> {
 
     JobRestriction jobRestriction;
+    final boolean skipCheckForMissingInfo;
 
     @DataBoundConstructor
-    public UpstreamCauseRestriction(JobRestriction jobRestriction) {
+    public UpstreamCauseRestriction(JobRestriction jobRestriction, 
+            boolean skipCheckForMissingInfo) {
         this.jobRestriction = jobRestriction;
+        this.skipCheckForMissingInfo = skipCheckForMissingInfo;
+    }
+    
+    public UpstreamCauseRestriction(JobRestriction jobRestriction) {
+        this(jobRestriction, false);
     }
 
     public JobRestriction getJobRestriction() {
         return jobRestriction;
     }
-   
+
+    public boolean isSkipCheckForMissingInfo() {
+        return skipCheckForMissingInfo;
+    }
+    
     @Override
     public void validate(Cause.UpstreamCause cause) throws AbortException {
-       if (jobRestriction != null && !jobRestriction.canTake(cause.getUpstreamRun())) {
+       final Run upstreamRun = cause.getUpstreamRun();
+       if (upstreamRun == null) {
+           if (!skipCheckForMissingInfo) {
+               throw new AbortException("Upstream build info is missing");
+           } else {
+               return;
+           }
+       } 
+       if (jobRestriction != null && !jobRestriction.canTake(upstreamRun)) {
            throw new AbortException("Job can't be executed due to upstream restrictions");
        } 
     }
