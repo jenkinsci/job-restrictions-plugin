@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
 import hudson.Extension;
@@ -52,142 +51,132 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestri
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.GroupSelector;
 
 /**
- *
+ * {@link JobRestriction}, which checks if the user belongs to the specified groups.
+ * @author Christopher Suarez
  * @author Oleg Nenashev <o.v.nenashev@gmail.com>
  * @since 0.4
  */
 public class StartedByMemberOfGroupRestriction extends JobRestriction {
 
-	private final List<GroupSelector> groupList;
-	private final boolean checkGroupsFromUpstreamProjects;
+    private final List<GroupSelector> groupList;
+    private final boolean checkGroupsFromUpstreamProjects;
 
-	private transient Set<String> acceptedGroups = null;
+    private transient Set<String> acceptedGroups = null;
 
-	@DataBoundConstructor
-	public StartedByMemberOfGroupRestriction(List<GroupSelector> groupList,
-			boolean checkGroupsFromUpstreamProjects) {
-		this.groupList = groupList;
-		this.checkGroupsFromUpstreamProjects = checkGroupsFromUpstreamProjects;
-	}
+    @DataBoundConstructor
+    public StartedByMemberOfGroupRestriction(List<GroupSelector> groupList,
+            boolean checkGroupsFromUpstreamProjects) {
+        this.groupList = groupList;
+        this.checkGroupsFromUpstreamProjects = checkGroupsFromUpstreamProjects;
+    }
 
-	public List<GroupSelector> getGroupList() {
-		return groupList;
-	}
+    public List<GroupSelector> getGroupList() {
+        return groupList;
+    }
 
-	public boolean isCheckGroupsFromUpstreamProjects() {
-		return checkGroupsFromUpstreamProjects;
-	}
+    public boolean isCheckGroupsFromUpstreamProjects() {
+        return checkGroupsFromUpstreamProjects;
+    }
 
-	private synchronized @Nonnull
-	Set<String> getAcceptedGroups() {
-		if (acceptedGroups == null) {
-			final List<GroupSelector> selectors = getGroupList();
-			acceptedGroups = new HashSet<String>(selectors.size());
-			for (GroupSelector selector : selectors) {
-				acceptedGroups.add(selector.getSelectedGroupId()); // merge
-																	// equal
-																	// entries
-			}
-		}
-		return acceptedGroups;
-	}
+    private synchronized @Nonnull
+    Set<String> getAcceptedGroups() {
+        if (acceptedGroups == null) {
+            final List<GroupSelector> selectors = getGroupList();
+            acceptedGroups = new HashSet<String>(selectors.size());
+            for (GroupSelector selector : selectors) {
+                // merge equal entries
+                acceptedGroups.add(selector.getSelectedGroupId());
+            }
+        }
+        return acceptedGroups;
+    }
 
-	private boolean acceptsUser(@CheckForNull String userId) {
-		if (userId == null) {
-			return false;
-		}
-		SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
-		UserDetails userDetails = sr.loadUserByUsername(userId);
-		for (String groupId : getAcceptedGroups()) {
-			GrantedAuthority[] authorities = userDetails.getAuthorities();
-			for (GrantedAuthority auth : authorities) {
-				String authority = auth.getAuthority();
-				if (authority.equals(groupId)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    private boolean acceptsUser(@CheckForNull String userId) {
+        if (userId == null) {
+            return false;
+        }
+        SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
+        UserDetails userDetails = sr.loadUserByUsername(userId);
+        for (String groupId : getAcceptedGroups()) {
+            GrantedAuthority[] authorities = userDetails.getAuthorities();
+            for (GrantedAuthority auth : authorities) {
+                String authority = auth.getAuthority();
+                if (authority.equals(groupId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	/** package */
-	boolean canTake(@Nonnull List<Cause> causes) {
-		boolean userIdCause = false;
-		boolean rebuildCause = false;
-		boolean upstreamCause = false;
-		boolean aUserIdWasNotAccepted =false;
-		boolean userIdCauseExists=false;;
-		for (Cause cause : causes) {
-			if (cause.getClass().equals(Cause.UserIdCause.class) && !aUserIdWasNotAccepted) {
-				userIdCauseExists=true;
-				//if several userIdCauses exists, be defensive and don't allow if one is not accepted.
-				final @CheckForNull
-				String startedBy = ((Cause.UserIdCause) cause).getUserId();
-				if(acceptsUser(startedBy) )
-				{
-					userIdCause = true;
-				}
-				else
-				{
-					aUserIdWasNotAccepted=true;
-					userIdCause=false;
-				}
-			}
-			if (checkGroupsFromUpstreamProjects
-					&& cause.getClass().equals(Cause.UpstreamCause.class)) {
+    /* package */ boolean canTake(@Nonnull List<Cause> causes) {
+        boolean userIdCause = false;
+        boolean rebuildCause = false;
+        boolean upstreamCause = false;
+        boolean aUserIdWasNotAccepted = false;
+        boolean userIdCauseExists = false;
+        
+        for (Cause cause : causes) {            
+            if (cause.getClass().equals(Cause.UserIdCause.class) && !aUserIdWasNotAccepted) {
+                userIdCauseExists = true;
+                //if several userIdCauses exists, be defensive and don't allow if one is not accepted.
+                final @CheckForNull
+                String startedBy = ((Cause.UserIdCause) cause).getUserId();
+                if (acceptsUser(startedBy)) {
+                    userIdCause = true;
+                } else {
+                    aUserIdWasNotAccepted = true;
+                    userIdCause = false;
+                }
+            }
+                      
+            if (checkGroupsFromUpstreamProjects && cause.getClass().equals(Cause.UpstreamCause.class)) {
+                final List<Cause> upstreamCauses = ((Cause.UpstreamCause) cause).getUpstreamCauses();
+                // Recursive call to iterate through all causes
+                if (canTake(upstreamCauses)) {
+                    upstreamCause = true;
+                }
+            }
 
-				final List<Cause> upstreamCauses = ((Cause.UpstreamCause) cause)
-						.getUpstreamCauses();
+        }
 
-				if (canTake(upstreamCauses)) // Recursive call to iterate
-												// through all causes
-				{
-					upstreamCause = true;
-				}
-			}
+        //userId has preceedence
+        if (userIdCauseExists) {
+            return userIdCause;
+        } else { //If no update cause exists we should also return false...
+            return upstreamCause;
+        }
+    }
 
-		}
+    @Override
+    public boolean canTake(Queue.BuildableItem item) {
 
-		//userId has preceedence
-		if(userIdCauseExists)
-		{
-			return userIdCause;
-		}
-		else//If no update cause exists we should also return false...
-		{
-			return upstreamCause;
-		}
-	}
+        List<Action> allActions = (List<Action>) item.getAllActions();
+        List<Cause> causes = new ArrayList<Cause>();
+        for (Action action : allActions) {
+            try {
+                CauseAction causeAction = (CauseAction) action;
+                causes.addAll(causeAction.getCauses());
+            } catch (ClassCastException cce) {
+            }
 
-	@Override
-	public boolean canTake(Queue.BuildableItem item) {
-		
-		List<Action> allActions = (List<Action>) item.getAllActions();
-		List<Cause> causes = new ArrayList<Cause>();
-		for (Action action : allActions) {
-			try {
-				CauseAction causeAction = (CauseAction) action;
-				causes.addAll(causeAction.getCauses());
-			} catch (ClassCastException cce) {
-			}
+        }
 
-		}
+        return canTake(causes);
+    }
 
-		return canTake(causes);
-	}
+    @Override
+    public boolean canTake(Run run) {
+        return canTake(run.getCauses());
+    }
 
-	@Override
-	public boolean canTake(Run run) {
-		return canTake(run.getCauses());
-	}
+    @Extension
+    public static class DescriptorImpl extends JobRestrictionDescriptor {
 
-	@Extension
-	public static class DescriptorImpl extends JobRestrictionDescriptor {
-
-		@Override
-		public String getDisplayName() {
-			return Messages
-					.restrictions_Job_StartedByMemberOfGroupRestriction_displayName();
-		}
-	}
+        @Override
+        public String getDisplayName() {
+            return Messages
+                    .restrictions_Job_StartedByMemberOfGroupRestriction_displayName();
+        }
+    }
 }
