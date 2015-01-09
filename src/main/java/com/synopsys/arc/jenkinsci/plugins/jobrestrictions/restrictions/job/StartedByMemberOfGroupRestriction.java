@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 Oleg Nenashev <o.v.nenashev@gmail.com>.
+ * Copyright 2014-2015 Christopher Suarez, Oleg Nenashev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,22 +29,14 @@ import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Queue;
 import hudson.model.Run;
-import hudson.security.SecurityRealm;
-
+import hudson.model.User;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
-import jenkins.model.Jenkins;
-
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
 import org.kohsuke.stapler.DataBoundConstructor;
-
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
@@ -78,8 +70,7 @@ public class StartedByMemberOfGroupRestriction extends JobRestriction {
         return checkGroupsFromUpstreamProjects;
     }
 
-    private synchronized @Nonnull
-    Set<String> getAcceptedGroups() {
+    private synchronized @Nonnull Set<String> getAcceptedGroups() {
         if (acceptedGroups == null) {
             final List<GroupSelector> selectors = getGroupList();
             acceptedGroups = new HashSet<String>(selectors.size());
@@ -95,15 +86,15 @@ public class StartedByMemberOfGroupRestriction extends JobRestriction {
         if (userId == null) {
             return false;
         }
-        SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
-        UserDetails userDetails = sr.loadUserByUsername(userId);
-        for (String groupId : getAcceptedGroups()) {
-            GrantedAuthority[] authorities = userDetails.getAuthorities();
-            for (GrantedAuthority auth : authorities) {
-                String authority = auth.getAuthority();
-                if (authority.equals(groupId)) {
-                    return true;
-                }
+        final @CheckForNull User usr = User.get(userId, false, null);
+        if (usr == null) { // missing user (e.g, has been already deleted)
+            return false;
+        }
+        
+        final Set<String> allowedGroups = getAcceptedGroups();        
+        for (String groupId : usr.getAuthorities()) {
+            if (allowedGroups.contains(groupId)) {
+                return true;
             }
         }
         return false;
@@ -113,15 +104,20 @@ public class StartedByMemberOfGroupRestriction extends JobRestriction {
         boolean userIdCause = false;
         boolean rebuildCause = false;
         boolean upstreamCause = false;
+        
         boolean aUserIdWasNotAccepted = false;
         boolean userIdCauseExists = false;
         
-        for (Cause cause : causes) {            
+        for (@CheckForNull Cause cause : causes) { 
+            if (cause == null) {
+                continue; // Protection from the bug in old core versions
+            }
+                   
+            // Check user causes
             if (cause.getClass().equals(Cause.UserIdCause.class) && !aUserIdWasNotAccepted) {
                 userIdCauseExists = true;
                 //if several userIdCauses exists, be defensive and don't allow if one is not accepted.
-                final @CheckForNull
-                String startedBy = ((Cause.UserIdCause) cause).getUserId();
+                final @CheckForNull String startedBy = ((Cause.UserIdCause) cause).getUserId();
                 if (acceptsUser(startedBy)) {
                     userIdCause = true;
                 } else {
@@ -130,14 +126,16 @@ public class StartedByMemberOfGroupRestriction extends JobRestriction {
                 }
             }
                       
+            // Check upstream projects if required
             if (checkGroupsFromUpstreamProjects && cause.getClass().equals(Cause.UpstreamCause.class)) {
                 final List<Cause> upstreamCauses = ((Cause.UpstreamCause) cause).getUpstreamCauses();
-                // Recursive call to iterate through all causes
+                // Recursive call to iterate through all above
                 if (canTake(upstreamCauses)) {
                     upstreamCause = true;
                 }
             }
 
+            // TODO: Check rebuild causes
         }
 
         //userId has preceedence
@@ -150,18 +148,13 @@ public class StartedByMemberOfGroupRestriction extends JobRestriction {
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-
-        List<Action> allActions = (List<Action>) item.getAllActions();
-        List<Cause> causes = new ArrayList<Cause>();
-        for (Action action : allActions) {
-            try {
+        final List<Cause> causes = new ArrayList<Cause>();
+        for (Action action : item.getActions()) {
+            if (action instanceof CauseAction) {
                 CauseAction causeAction = (CauseAction) action;
                 causes.addAll(causeAction.getCauses());
-            } catch (ClassCastException cce) {
-            }
-
+            } 
         }
-
         return canTake(causes);
     }
 
