@@ -29,7 +29,7 @@
     <f:entry title="${%groupList}"> 
         <f:repeatableProperty field="groupList" add="${%Add group}"/>  
     </f:entry>
-    <f:entry field="checkGroupsFromUpstreamProjects">
-        <f:checkbox title="${%checkGroupsFromUpstreamProjects}" checked="${it.checkGroupsFromUpstreamProjects}"/>
+    <f:entry field="checkUpstreamProjects">
+        <f:checkbox title="${%checkUpstreamProjects}" checked="${it.checkUpstreamProjects}"/>
     </f:entry>
 </j:jelly>

@@ -25,13 +25,9 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.UserSelector;
 import hudson.Extension;
-import hudson.model.Cause;
-import hudson.model.Queue;
-import hudson.model.Run;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,23 +36,26 @@ import javax.annotation.Nonnull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- *
+ * Handles restrictions from User causes.
  * @author Oleg Nenashev <o.v.nenashev@gmail.com>
  * @since 0.4
  */
-public class StartedByUserRestriction  extends JobRestriction {
+public class StartedByUserRestriction extends AbstractUserCauseRestriction {
     
     private final List<UserSelector> usersList; 
-    private final boolean checkUsersFromUpstreamProjects;
+    
+    /**
+     * @deprecated Not implemented
+     */
     private final @Deprecated boolean acceptAutomaticRuns;
     private final boolean acceptAnonymousUsers;
     private transient Set<String> acceptedUsers = null;
 
     @DataBoundConstructor
-    public StartedByUserRestriction(List<UserSelector> usersList, boolean checkUsersFromUpstreamProjects, 
+    public StartedByUserRestriction(List<UserSelector> usersList, boolean checkUpstreamProjects, 
             boolean acceptAutomaticRuns, boolean acceptAnonymousUsers) {
+        super(checkUpstreamProjects);
         this.usersList = usersList;
-        this.checkUsersFromUpstreamProjects = checkUsersFromUpstreamProjects;
         this.acceptAutomaticRuns = acceptAutomaticRuns;
         this.acceptAnonymousUsers = acceptAnonymousUsers;
     }
@@ -68,11 +67,7 @@ public class StartedByUserRestriction  extends JobRestriction {
     public @Deprecated boolean isAcceptAutomaticRuns() {
         return acceptAutomaticRuns;
     }
-
-    public boolean isCheckUsersFromUpstreamProjects() {
-        return checkUsersFromUpstreamProjects;
-    }
-
+    
     public boolean isAcceptAnonymousUsers() {
         return acceptAnonymousUsers;
     }
@@ -88,39 +83,11 @@ public class StartedByUserRestriction  extends JobRestriction {
         return acceptedUsers;
     }
     
-    private boolean acceptsUser(@CheckForNull String userId) {
+    @Override
+    protected boolean acceptsUser(@CheckForNull String userId) {
         return userId == null
                 ? acceptAnonymousUsers
                 : getAcceptedUsers().contains(userId);
-    }
-    
-    /**package*/ boolean canTake(@Nonnull List<Cause> causes) {
-        for (Cause cause : causes) {
-            if (cause instanceof Cause.UserIdCause) {
-                final @CheckForNull String startedBy = ((Cause.UserIdCause)cause).getUserId();
-                if (acceptsUser(startedBy)) {
-                    return true;
-                }
-            }
-            if (checkUsersFromUpstreamProjects && cause instanceof Cause.UpstreamCause) {
-                final List<Cause> upstreamCauses = ((Cause.UpstreamCause)cause).getUpstreamCauses();
-                if (canTake(upstreamCauses)) { // Recursive call to iterate through all causes
-                    return true;
-                }
-            }
-            //TODO: check acceptAutomaticRuns
-        }
-        return false;
-    }
-    
-    @Override
-    public boolean canTake(Queue.BuildableItem item) {
-        return canTake(item.getCauses());
-    }
-
-    @Override
-    public boolean canTake(Run run) {
-        return canTake(run.getCauses());
     }
     
     @Extension
