@@ -25,12 +25,22 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
 import hudson.Extension;
 import hudson.model.User;
+import hudson.security.SecurityRealm;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import jenkins.model.Jenkins;
+
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.userdetails.UserDetails;
 import org.kohsuke.stapler.DataBoundConstructor;
+
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
@@ -38,6 +48,7 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.GroupSelector;
 
 /**
  * {@link JobRestriction}, which checks if the user belongs to the specified groups.
+ * 
  * @author Christopher Suarez
  * @author Oleg Nenashev <o.v.nenashev@gmail.com>
  * @since 0.4
@@ -59,7 +70,8 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         return groupList;
     }
 
-    private synchronized @Nonnull Set<String> getAcceptedGroups() {
+    private synchronized @Nonnull
+    Set<String> getAcceptedGroups() {
         if (acceptedGroups == null) {
             final List<GroupSelector> selectors = getGroupList();
             acceptedGroups = new HashSet<String>(selectors.size());
@@ -76,13 +88,13 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         if (userId == null) {
             return false;
         }
-        final @CheckForNull User usr = User.get(userId, false, null);
-        if (usr == null) { // missing user (e.g, has been already deleted)
+        final @CheckForNull List<String> authorities = getAuthorities(userId);
+        if (authorities == null) {
             return false;
         }
-        
-        final Set<String> allowedGroups = getAcceptedGroups();        
-        for (String groupId : usr.getAuthorities()) {
+
+        final Set<String> allowedGroups = getAcceptedGroups();
+        for (String groupId : authorities) {
             if (allowedGroups.contains(groupId)) {
                 return true;
             }
@@ -90,15 +102,39 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         return false;
     }
 
-    
+    private List<String> getAuthorities(String userId) {
+        final @CheckForNull User usr = User.get(userId, false, null);
+        if (usr == null) {
+            return getAuthoritiesFromRealm(userId);
+        }
+        List<String> authorities = usr.getAuthorities();
+        if (authorities == null || authorities.size() == 0) {
+            return getAuthoritiesFromRealm(userId);
+        }
+        return authorities;
+    }
+
+    private List<String> getAuthoritiesFromRealm(String userId) {
+        SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
+        final @CheckForNull UserDetails userDetails = sr.loadUserByUsername(userId);
+        if (userDetails == null) {
+            return null;
+        }
+        GrantedAuthority[] authorities = userDetails.getAuthorities();
+        List<String> authorityList = new ArrayList<String>(authorities.length);
+
+        for (GrantedAuthority auth : authorities) {
+            authorityList.add(auth.getAuthority());
+        }
+        return authorityList;
+    }
 
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
 
         @Override
         public String getDisplayName() {
-            return Messages
-                    .restrictions_Job_StartedByMemberOfGroupRestriction_displayName();
+            return Messages.restrictions_Job_StartedByMemberOfGroupRestriction_displayName();
         }
     }
 }
