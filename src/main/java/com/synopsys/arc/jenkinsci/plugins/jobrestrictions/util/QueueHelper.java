@@ -40,7 +40,6 @@ public class QueueHelper {
     public static String getFullName(Queue.BuildableItem item) {
         Queue.Task current = item.task;
         String res = current.getName();
-        
         //Fetching the full path of the item
         if (current instanceof Item) {
             Item stub = (Item)current;
