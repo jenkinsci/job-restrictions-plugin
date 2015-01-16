@@ -23,5 +23,10 @@
  -->
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:sl="/hudson/plugins/sidebar_link">
-    <f:dropdownDescriptorSelector title="${%Restriction}" field="jobRestriction" />
+    <f:entry field="skipCheckForMissingInfo" title="${%Skip missing builds}">
+        <f:checkbox title="${%skipCheckForMissingInfo}" checked="${it.skipCheckForMissingInfo}"/>
+    </f:entry>
+    <f:entry>
+        <f:dropdownDescriptorSelector title="${%Restriction}" field="jobRestriction" />
+    </f:entry>
 </j:jelly>
