@@ -45,13 +45,18 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.GroupSelector;
+import hudson.model.Queue;
+import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.springframework.dao.DataAccessException;
 
 /**
- * {@link JobRestriction}, which checks if the user belongs to the specified groups.
- * 
+ * {@link JobRestriction}, which checks if a user belongs to the specified groups.
+ * In several cases the extension may load user data from {@link SecurityRealm},
+ * so there can be significant delays in Jenkins {@link Queue}.
  * @author Christopher Suarez
  * @author Oleg Nenashev <o.v.nenashev@gmail.com>
  * @since 0.4
+ * @see StartedByUserRestriction
  */
 public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestriction {
 
@@ -70,8 +75,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         return groupList;
     }
 
-    private synchronized @Nonnull
-    Set<String> getAcceptedGroups() {
+    private synchronized @Nonnull Set<String> getAcceptedGroups() {
         if (acceptedGroups == null) {
             final List<GroupSelector> selectors = getGroupList();
             acceptedGroups = new HashSet<String>(selectors.size());
@@ -102,27 +106,53 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         return false;
     }
 
-    private List<String> getAuthorities(String userId) {
+    /**
+     * Loads group lists for the user.
+     * {@link User} info has a high priority. If there is no info, {@link UserDetails}
+     * will be loaded from the current {@link SecurityRealm}.
+     * @param userId
+     * @return List of effective groups. Null if there's no info
+     */
+    private static @CheckForNull List<String> getAuthorities(@Nonnull String userId) {
         final @CheckForNull User usr = User.get(userId, false, null);
-        if (usr == null) {
+        if (usr == null) { // User is not registered in Jenkins (e.g. deleted)
             return getAuthoritiesFromRealm(userId);
         }
+         
         List<String> authorities = usr.getAuthorities();
-        if (authorities == null || authorities.size() == 0) {
+        if (authorities.isEmpty()) {
             return getAuthoritiesFromRealm(userId);
         }
         return authorities;
     }
 
-    private List<String> getAuthoritiesFromRealm(String userId) {
-        SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
-        final @CheckForNull UserDetails userDetails = sr.loadUserByUsername(userId);
+    /**
+     * Extracts user groups from {@link SecurityRealm}.
+     * @param userId
+     * @return List of effective groups. Null if there's no info
+     */
+    private static @CheckForNull List<String> getAuthoritiesFromRealm(@Nonnull String userId) {
+        final Jenkins instance = Jenkins.getInstance();
+        if (instance == null) {
+            return null; // Jenkins has not been started yet
+        }
+              
+        @CheckForNull UserDetails userDetails = null;
+        try {
+            final SecurityRealm sr = instance.getSecurityRealm();   
+            userDetails = sr.loadUserByUsername(userId);
+        } catch (DataAccessException ex) {
+            // fallback to null handler
+        } catch (UsernameNotFoundException ex) {
+            // fallback to null handler
+        }
+
         if (userDetails == null) {
             return null;
         }
+
         GrantedAuthority[] authorities = userDetails.getAuthorities();
         List<String> authorityList = new ArrayList<String>(authorities.length);
-
         for (GrantedAuthority auth : authorities) {
             authorityList.add(auth.getAuthority());
         }
