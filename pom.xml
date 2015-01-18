@@ -8,7 +8,7 @@
 
     <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
     <artifactId>job-restrictions</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <name>Jenkins Job Restrictions Plugin</name>
     <description>Provides Additional options to restrict jobs execution</description>
     <packaging>hpi</packaging>
