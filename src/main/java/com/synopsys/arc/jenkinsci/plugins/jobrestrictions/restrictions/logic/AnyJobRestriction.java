@@ -49,8 +49,8 @@ public class AnyJobRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return true;
     }
-        
-    @Extension
+
+    @Extension(ordinal = 1000)
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
