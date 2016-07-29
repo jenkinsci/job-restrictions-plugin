@@ -24,6 +24,7 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic.AnyJobRestriction;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.JenkinsHelper;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
@@ -65,7 +66,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
 
     @Override
     public JobRestrictionDescriptor getDescriptor() {
-        return (JobRestrictionDescriptor) Jenkins.getInstance().getDescriptorOrDie(getClass());
+        return (JobRestrictionDescriptor) JenkinsHelper.getInstanceOrDie().getDescriptorOrDie(getClass());
     }
 
     /**
@@ -73,7 +74,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @return List of {@link JobRestriction}s.
      */    
     public static DescriptorExtensionList<JobRestriction,JobRestrictionDescriptor> all() {
-        return Jenkins.getInstance().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
+        return JenkinsHelper.getInstanceOrDie().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
             (JobRestriction.class);
     }
     

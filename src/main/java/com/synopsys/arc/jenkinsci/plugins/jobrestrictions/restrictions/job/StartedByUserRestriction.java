@@ -27,6 +27,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.UserSelector;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Oleg Nenashev <o.v.nenashev@gmail.com>
  * @since 0.4
  */
+// TODO: it's a real issue, needs some love
+@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", 
+        justification = "XStream does actually need serialization, the code needs refactoring in 1.0")
 public class StartedByUserRestriction extends AbstractUserCauseRestriction {
     
     private final List<UserSelector> usersList; 

@@ -99,7 +99,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         
         public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
-            SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
+            SecurityRealm sr = JenkinsHelper.getInstanceOrDie().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
             if (selectedGroupId == null) {
                 return FormValidation.error("Field is empty");
