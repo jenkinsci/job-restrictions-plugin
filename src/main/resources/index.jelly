@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <div>
   This plugin provides additional options, which allow to restrict execution of jobs
 </div>
