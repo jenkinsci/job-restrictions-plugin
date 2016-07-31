@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Copyright 2013-2016 Oleg Nenashev, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import hudson.model.Descriptor;
 /**
  * Restricts the job execution according to the build cause.
  * @param <TCause> A cause type to be checked
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @author Oleg Nenashev
  */
 public abstract class JobCauseRestriction<TCause extends Cause>  
     implements Describable<JobCauseRestriction<? extends Cause>>  {

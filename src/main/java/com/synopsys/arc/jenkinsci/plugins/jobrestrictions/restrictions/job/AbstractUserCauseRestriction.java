@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Oleg Nenashev <o.v.nenashev@gmail.com>.
+ * Copyright 2015-2016 Christopher Suarez, Oleg Nenashev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import javax.annotation.Nonnull;
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
  * @author Christopher Suarez
- * @author Oleg Nenashev <o.v.nenashev@gmail.com>
+ * @author Oleg Nenashev
  * @since 0.4
  * @see StartedByUserRestriction
  * @see StartedByMemberOfGroupRestriction

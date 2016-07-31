@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Synopsys Inc., Oleg Nenashev <nenashev@synopsys.com> 
+ * Copyright 2013-2016 Synopsys Inc., Oleg Nenashev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import jenkins.model.Jenkins;
 /**
  * The extension point, which allows to restrict job executions.
  * 
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @author Oleg Nenashev
  */
 public abstract class JobRestriction implements ExtensionPoint, Describable<JobRestriction>, Serializable {
     
