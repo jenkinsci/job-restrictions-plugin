@@ -24,6 +24,7 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -32,6 +33,7 @@ import hudson.model.Cause;
 import hudson.model.Job;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
+import hudson.slaves.NodeProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**

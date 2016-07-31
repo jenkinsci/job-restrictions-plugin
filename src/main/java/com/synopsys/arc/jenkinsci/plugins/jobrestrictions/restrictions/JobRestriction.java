@@ -28,14 +28,13 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.JenkinsHelper;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
-import hudson.model.Descriptor;
+import hudson.model.Job;
 import hudson.model.Node;
 import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Nonnull;
-import jenkins.model.Jenkins;
 
 /**
  * The extension point, which allows to restrict job executions.
