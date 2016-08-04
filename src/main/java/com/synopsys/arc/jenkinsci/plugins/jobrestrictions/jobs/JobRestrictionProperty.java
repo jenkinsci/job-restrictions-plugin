@@ -36,12 +36,15 @@ import hudson.model.JobPropertyDescriptor;
 import hudson.slaves.NodeProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.CheckForNull;
+
 /**
  * A {@link NodeProperty}, which manages {@link JobRestriction}s for {@link AbstractBuild}s.
  * @author Oleg Nenashev
  */
 public class JobRestrictionProperty extends JobProperty {
-    
+
+    @CheckForNull
     JobRestrictionPropertyConfig config;
 
     @DataBoundConstructor
@@ -49,6 +52,7 @@ public class JobRestrictionProperty extends JobProperty {
         this.config = config;
     }
 
+    @CheckForNull
     public JobRestrictionPropertyConfig getConfig() {
         return config;
     }
