@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Copyright 2013-2016 Oleg Nenashev, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -32,11 +33,12 @@ import hudson.model.Cause;
 import hudson.model.Job;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
+import hudson.slaves.NodeProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * A {@link NodeProperty}, which manages {@link JobRestriction}s for {@link AbstractBuild}s.
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @author Oleg Nenashev
  */
 public class JobRestrictionProperty extends JobProperty {
     

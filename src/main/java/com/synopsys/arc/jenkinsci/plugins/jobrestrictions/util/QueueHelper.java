@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Copyright 2013 Oleg Nenashev, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,29 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
 import hudson.model.Item;
+import hudson.model.Job;
 import hudson.model.Queue;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
+
+import javax.annotation.Nonnull;
 
 /**
  * Provides additional for Queue objects.
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @author Oleg Nenashev
  */
+@Restricted(NoExternalUse.class)
 public class QueueHelper {
+
+    //TODO: Optimize by StringBuilder
     /**
      * Generates job-style project name for the buildable item
      * @deprecated Just a hack, will be removed in the future versions
-     * @param item
-     * @return String in the Job::getFullName() format (a/b/c/d)
+     * @param item Item, for which the name should be retrieved
+     * @return String in the {@link Job#getFullName()} format (a/b/c/d)
      */
-    public static String getFullName(Queue.BuildableItem item) {
+    @Deprecated
+    public static String getFullName(@Nonnull Queue.BuildableItem item) {
         Queue.Task current = item.task;
         String res = current.getName();
         //Fetching the full path of the item

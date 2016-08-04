@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Copyright 2013-2016 Oleg Nenashev, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ import hudson.model.Run;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- *
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Logic inversion condition.
+ * @author Oleg Nenashev
  */
 public class NotJobRestriction extends JobRestriction {
     JobRestriction restriction;

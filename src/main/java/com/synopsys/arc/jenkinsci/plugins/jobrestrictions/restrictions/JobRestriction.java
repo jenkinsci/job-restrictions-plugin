@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Synopsys Inc., Oleg Nenashev <nenashev@synopsys.com> 
+ * Copyright 2013-2016 Synopsys Inc., Oleg Nenashev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,22 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic.AnyJobRestriction;
+import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.JenkinsHelper;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
-import hudson.model.Descriptor;
+import hudson.model.Job;
 import hudson.model.Node;
 import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Nonnull;
-import jenkins.model.Jenkins;
 
 /**
  * The extension point, which allows to restrict job executions.
  * 
- * @author Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * @author Oleg Nenashev
  */
 public abstract class JobRestriction implements ExtensionPoint, Describable<JobRestriction>, Serializable {
     
@@ -65,7 +65,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
 
     @Override
     public JobRestrictionDescriptor getDescriptor() {
-        return (JobRestrictionDescriptor) Jenkins.getInstance().getDescriptorOrDie(getClass());
+        return (JobRestrictionDescriptor) JenkinsHelper.getInstanceOrDie().getDescriptorOrDie(getClass());
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @return List of {@link JobRestriction}s.
      */    
     public static DescriptorExtensionList<JobRestriction,JobRestrictionDescriptor> all() {
-        return Jenkins.getInstance().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
+        return JenkinsHelper.getInstanceOrDie().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
             (JobRestriction.class);
     }
     

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013-2016 Oleg Nenashev, Synopsys Inc.
+ * Copyright (c) 2016 Oleg Nenashev.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
+package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
-import hudson.model.queue.CauseOfBlockage;
+import javax.annotation.Nonnull;
+import jenkins.model.Jenkins;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 /**
- * A specific blockage cause for {@link JobRestriction}s.
+ * Helper class for retrieving Jenkins instances.
  * @author Oleg Nenashev
  */
-public class JobRestrictionBlockageCause extends CauseOfBlockage {
-
-    String message;
-    public static final JobRestrictionBlockageCause DEFAULT = 
-            new JobRestrictionBlockageCause("");
+@Restricted(NoExternalUse.class)
+public class JenkinsHelper {
     
-    public JobRestrictionBlockageCause(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-    
-    @Override
-    public String getShortDescription() {
-        return message;
+    /**
+     * Gets the {@link Jenkins} singleton.
+     * @return {@link Jenkins} instance
+     * @throws IllegalStateException {@link Jenkins} has not been started, or was already shut down
+     */
+    @Nonnull
+    public static Jenkins getInstanceOrDie() throws IllegalStateException {
+        final Jenkins instance = Jenkins.getInstance();
+        if (instance == null) {
+            throw new IllegalStateException("Jenkins has not been started, or was already shut down");
+        }
+        return instance;
     }
     
 }

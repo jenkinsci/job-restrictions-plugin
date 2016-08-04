@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 Oleg Nenashev <nenashev@synopsys.com>, Synopsys Inc.
+ * Copyright 2014 Oleg Nenashev, Synopsys Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ import hudson.Functions;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.User;
 import hudson.security.SecurityRealm;
 import hudson.security.GroupDetails;
 import hudson.security.UserMayOrMayNotExistException;
@@ -39,8 +38,6 @@ import java.io.Serializable;
 
 import javax.annotation.CheckForNull;
 
-import jenkins.model.Jenkins;
-
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -48,7 +45,7 @@ import org.kohsuke.stapler.QueryParameter;
 import org.springframework.dao.DataAccessException;
 
 /**
- * Describable Item, which allows to configure a user.
+ * Describable Item, which allows to configure a group.
  * @since 0.4
  */
 //TODO: Autocompletion
@@ -99,7 +96,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         
         public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
-            SecurityRealm sr = Jenkins.getInstance().getSecurityRealm();
+            SecurityRealm sr = JenkinsHelper.getInstanceOrDie().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
             if (selectedGroupId == null) {
                 return FormValidation.error("Field is empty");

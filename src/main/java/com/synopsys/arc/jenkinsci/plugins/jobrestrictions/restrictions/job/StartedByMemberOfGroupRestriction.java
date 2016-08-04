@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014-2015 Christopher Suarez, Oleg Nenashev
+ * Copyright 2014-2016 Christopher Suarez, Oleg Nenashev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.GroupSelector;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Queue;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.springframework.dao.DataAccessException;
@@ -54,10 +55,13 @@ import org.springframework.dao.DataAccessException;
  * In several cases the extension may load user data from {@link SecurityRealm},
  * so there can be significant delays in Jenkins {@link Queue}.
  * @author Christopher Suarez
- * @author Oleg Nenashev <o.v.nenashev@gmail.com>
+ * @author Oleg Nenashev
  * @since 0.4
  * @see StartedByUserRestriction
  */
+// TODO: it's a real issue, needs some love
+@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", 
+        justification = "XStream does actually need serialization, the code needs refactoring in 1.0")
 public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestriction {
 
     private final List<GroupSelector> groupList;
