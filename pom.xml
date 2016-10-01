@@ -3,19 +3,19 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.12</version>
+        <version>2.16</version>
     </parent>
 
     <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
     <artifactId>job-restrictions</artifactId>
     <version>0.6-SNAPSHOT</version>
     <name>Jenkins Job Restrictions Plugin</name>
-    <description>Provides Additional options to restrict jobs execution</description>
+    <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
     <packaging>hpi</packaging>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Job+Restrictions+Plugin</url>
 
     <properties>
-        <jenkins.version>1.580.3</jenkins.version>
+        <jenkins.version>1.609.3</jenkins.version>
         <java.level>6</java.level>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -23,14 +23,14 @@
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
