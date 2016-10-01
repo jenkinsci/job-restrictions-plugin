@@ -23,13 +23,13 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
+import javax.annotation.Nonnull;
+
 import hudson.model.Item;
 import hudson.model.Job;
 import hudson.model.Queue;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
-
-import javax.annotation.Nonnull;
 
 /**
  * Provides additional for Queue objects.
@@ -48,22 +48,26 @@ public class QueueHelper {
     @Deprecated
     public static String getFullName(@Nonnull Queue.BuildableItem item) {
         Queue.Task current = item.task;
-        String res = current.getName();
-        //Fetching the full path of the item
-        if (current instanceof Item) {
-            Item stub = (Item)current;
-            return stub.getFullName();
-        }
-        
-        // Default approach via interface
-        while (true) {
+        String res = getItemName(current);
+
+        // this is only executed if we didn't call Item.getFullName() in getItemName
+        while (!(current instanceof Item)) {
             Queue.Task parent = current.getOwnerTask();
             if (parent == current || parent == null) {
                 break;
-            }          
-            res = parent.getName() + "/" + res;
+            }
+            res = getItemName(parent) + "/" + res;
             current = parent;
-        }        
+        }
         return res;
+    }
+
+    private static String getItemName(Queue.Task task) {
+        if (task instanceof Item) {
+            Item stub = (Item)task;
+            return stub.getFullName();
+        } else {
+            return task.getName();
+        }
     }
 }
