@@ -10,7 +10,7 @@
     <artifactId>job-restrictions</artifactId>
     <version>0.6-SNAPSHOT</version>
     <name>Jenkins Job Restrictions Plugin</name>
-    <description>Provides Additional options to restrict jobs execution</description>
+    <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
     <packaging>hpi</packaging>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Job+Restrictions+Plugin</url>
 

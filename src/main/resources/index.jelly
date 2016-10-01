@@ -1,4 +1,5 @@
 <?jelly escape-by-default='true'?>
 <div>
-  This plugin provides additional options, which allow to restrict execution of jobs
+  Allows restricting execution of jobs on nodes depending on criterias like name pattern, ownership, etc.
+  Also can restrict job triggering by other jobs and users.
 </div>
