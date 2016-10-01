@@ -21,16 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
+package io.jenkins.plugins.jobrestrictions.restrictions.job;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.nodes.JobRestrictionProperty;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.ClassSelector;
+import io.jenkins.plugins.jobrestrictions.util.ClassSelector;
 import hudson.matrix.MatrixProject;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Queue;
 import hudson.model.FreeStyleProject;
-import hudson.model.Job;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;

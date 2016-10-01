@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
+package io.jenkins.plugins.jobrestrictions.restrictions.job;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.ClassSelector;
+import io.jenkins.plugins.jobrestrictions.util.ClassSelector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.Queue;
