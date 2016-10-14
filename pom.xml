@@ -8,7 +8,7 @@
 
     <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
     <artifactId>job-restrictions</artifactId>
-    <version>0.6</version>
+    <version>0.7-SNAPSHOT</version>
     <name>Jenkins Job Restrictions Plugin</name>
     <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
     <packaging>hpi</packaging>
@@ -50,7 +50,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-      <tag>job-restrictions-0.6</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <licenses>
