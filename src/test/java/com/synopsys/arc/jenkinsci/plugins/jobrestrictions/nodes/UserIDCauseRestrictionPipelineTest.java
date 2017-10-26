@@ -26,69 +26,69 @@ import hudson.security.ACLContext;
 import hudson.slaves.DumbSlave;
 
 public class UserIDCauseRestrictionPipelineTest {
-	
-	@Rule public JenkinsRule j = new JenkinsRule();
-	private static final String TEST_USERNAME = "foo";
-	private static final String TEST_USERNAME_2 = "bar";
-	
-	@Before
+  
+    @Rule public JenkinsRule j = new JenkinsRule();
+    private static final String TEST_USERNAME = "foo";
+    private static final String TEST_USERNAME_2 = "bar";
+  
+    @Before
     public void setupSecurityRealm() {
         j.jenkins.setSecurityRealm(j.createDummySecurityRealm());
     }
-	
+  
     @Test
     public void nodeShouldAllowPipelineRunsByAcceptedUser_UserIdCause() throws Exception {
-    	DumbSlave slave = j.createOnlineSlave();
-    	List<UserSelector> listUserSelector = new ArrayList<UserSelector>(1);
-    	listUserSelector.add(new UserSelector(TEST_USERNAME));
-    	
-    	// add StartedByUser Restriction property to node
-    	slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
-    	
-    	// create pipeline job that will run on the test slave
-    	WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
-    	project.setDefinition(new CpsFlowDefinition(
-    			"node('" + slave.getNodeName() + "') {\n" +
+        DumbSlave slave = j.createOnlineSlave();
+        List<UserSelector> listUserSelector = new ArrayList<UserSelector>(1);
+        listUserSelector.add(new UserSelector(TEST_USERNAME));
+      
+        // add StartedByUser Restriction property to node
+        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
+      
+        // create pipeline job that will run on the test slave
+        WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
+        project.setDefinition(new CpsFlowDefinition(
+                "node('" + slave.getNodeName() + "') {\n" +
                 "    sh('echo hello')\n" +
                 "}", true));
-    	
-    	// schedule a build for the pipeline job as the user who is accepted by the test slave
-    	try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
-    		project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
-    	}
-    	
-    	// more than enough time given for the build to finish
-    	Thread.sleep(10000);
-    	
-    	WorkflowRun build = project.getFirstBuild();
+      
+        // schedule a build for the pipeline job as the user who is accepted by the test slave
+        try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
+            project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
+        }
+      
+        // more than enough time given for the build to finish
+        Thread.sleep(10000);
+      
+        WorkflowRun build = project.getFirstBuild();
         assertThat("Job restriction should allow pipeline jobs", build.getResult(), equalTo(Result.SUCCESS));
     }
     
     @Test
     public void nodeShouldNotAllowPipelineRunsByUnacceptedUser_UserIdCause() throws Exception {
-    	DumbSlave slave = j.createOnlineSlave();
-    	List<UserSelector> listUserSelector = new ArrayList<UserSelector>(1);
-    	listUserSelector.add(new UserSelector(TEST_USERNAME_2));
-    	
-    	// add StartedByUser Restriction property to node
-    	slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
-    	
-    	WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
-    	project.setDefinition(new CpsFlowDefinition(
+        DumbSlave slave = j.createOnlineSlave();
+        List<UserSelector> listUserSelector = new ArrayList<UserSelector>(1);
+        listUserSelector.add(new UserSelector(TEST_USERNAME_2));
+      
+        // add StartedByUser Restriction property to node
+        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
+      
+        WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
+        project.setDefinition(new CpsFlowDefinition(
                 "node('" + slave.getNodeName() + "') {\n" +
                 "    sh('echo hello')\n" +
                 "}", true));
-    	
-    	// schedule a build for the pipeline job as the user who is not accepted by the test slave
-    	try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
-    		project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
-    	}
+      
+        // schedule a build for the pipeline job as the user who is not accepted by the test slave
+        try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
+            project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
+        }
 
-    	// more than enough time given for the build to finish
-    	Thread.sleep(10000);
-    	
-    	// the return value of build.getResult() will be null
-    	WorkflowRun build = project.getFirstBuild();
+        // more than enough time given for the build to finish
+        Thread.sleep(10000);
+      
+        // the return value of build.getResult() will be null
+        WorkflowRun build = project.getFirstBuild();
         assertThat("Job restriction should allow pipeline jobs", build.getResult(), not(equalTo(Result.SUCCESS)));
     }
 }
