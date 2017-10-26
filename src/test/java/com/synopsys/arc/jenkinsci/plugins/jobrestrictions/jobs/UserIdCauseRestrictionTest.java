@@ -3,6 +3,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 import hudson.model.*;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.security.ACL;
+import hudson.security.ACLContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -60,18 +61,16 @@ public class UserIdCauseRestrictionTest {
         assertThat("Job restriction should have prohibited the manual launch for the Legacy UserCause", build.getResult(), equalTo(Result.FAILURE));
     }
     
+    // ACL.impersonate() deprecated. Replaced with ACL.as().
     private FreeStyleBuild runAsUser(final FreeStyleProject project, String username, final boolean legacyCause) 
-            throws InterruptedException, ExecutionException, TimeoutException {
-        User user = j.jenkins.getUser(username);
-        final List<QueueTaskFuture<FreeStyleBuild>> scheduled = new ArrayList<QueueTaskFuture<FreeStyleBuild>>(1);
-        ACL.impersonate(user.impersonate(), new Runnable() {
-            @Override
-            public void run() {
-                final Cause cause = legacyCause ? new Cause.UserCause() : new Cause.UserIdCause();
-                scheduled.add(project.scheduleBuild2(0, cause));
-            }
-        });
-        
+    		throws InterruptedException, ExecutionException, TimeoutException {
+    	User user = j.jenkins.getUser(username);
+    	final List<QueueTaskFuture<FreeStyleBuild>> scheduled = new ArrayList<QueueTaskFuture<FreeStyleBuild>>(1);
+    	try (ACLContext ctx = ACL.as(user)) {
+    		final Cause cause = legacyCause ? new Cause.UserCause() : new Cause.UserIdCause();
+    		scheduled.add(project.scheduleBuild2(0, cause));
+    	}
+
         Assert.assertThat(scheduled, not(nullValue()));
         return scheduled.get(0).get(1, TimeUnit.MINUTES);
     }
