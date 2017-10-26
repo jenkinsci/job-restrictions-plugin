@@ -30,8 +30,12 @@ import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Queue;
 import hudson.model.Run;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.PlaceholderTask;;
@@ -45,7 +49,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.Placeh
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-    
+	
     /**
      * Enables the check of upstream projects
      */
@@ -118,19 +122,19 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
         final List<Cause> causes;
         
         // The enclosed BuildableItem has a Pipeline step task
-        if (item.task.getClass().equals(PlaceholderTask.class)) {
+        if (item.task instanceof PlaceholderTask) {
             // This tasks's context is present, causes can be retrieved
             if (((PlaceholderTask) item.task).run() != null) {
                 causes = ((PlaceholderTask) item.task).run().getCauses();
             // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
+            // Context loaded via runForDisplay() and is now present
+            } else if (((PlaceholderTask) item.task).runForDisplay() != null) {
+            	causes = ((PlaceholderTask) item.task).runForDisplay().getCauses();
+            // Context cannot be loaded
             } else {
-                // Context loaded and is now present
-                if (((PlaceholderTask) item.task).runForDisplay() != null) {
-                    causes = ((PlaceholderTask) item.task).runForDisplay().getCauses();
-                // Context cannot be loaded
-                } else {
-                    causes = null;
-                }
+            	causes = new ArrayList<Cause>();
+            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its context loaded. Causes cannot be retrieved.",
+            		item.task.getDisplayName(), "workflow-durable-task-step"));
             }
         } else {
             causes = new ArrayList<Cause>();
@@ -148,4 +152,6 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return canTake(run.getCauses());
     }
+    
+    private static final Logger LOGGER = Logger.getLogger(AbstractUserCauseRestriction.class.getName());
 }
