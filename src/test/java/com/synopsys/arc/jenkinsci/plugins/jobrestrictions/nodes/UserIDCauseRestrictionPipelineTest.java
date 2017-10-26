@@ -22,7 +22,6 @@ import hudson.model.CauseAction;
 import hudson.model.Result;
 import hudson.model.User;
 import hudson.security.ACL;
-import hudson.security.ACLContext;
 import hudson.slaves.DumbSlave;
 
 public class UserIDCauseRestrictionPipelineTest {
@@ -53,9 +52,12 @@ public class UserIDCauseRestrictionPipelineTest {
                 "}", true));
       
         // schedule a build for the pipeline job as the user who is accepted by the test slave
-        try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
-            project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
-        }
+        ACL.impersonate((User.getById(TEST_USERNAME, true)).impersonate(), new Runnable() {
+            @Override
+            public void run() {
+            	project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
+            }
+        });
       
         // more than enough time given for the build to finish
         Thread.sleep(10000);
@@ -80,9 +82,12 @@ public class UserIDCauseRestrictionPipelineTest {
                 "}", true));
       
         // schedule a build for the pipeline job as the user who is not accepted by the test slave
-        try (ACLContext ctx = ACL.as(User.getById(TEST_USERNAME, true))) {
-            project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
-        }
+        ACL.impersonate((User.getById(TEST_USERNAME, true)).impersonate(), new Runnable() {
+            @Override
+            public void run() {
+            	project.scheduleBuild2(0, new CauseAction(new Cause.UserIdCause()));
+            }
+        });
 
         // more than enough time given for the build to finish
         Thread.sleep(10000);
