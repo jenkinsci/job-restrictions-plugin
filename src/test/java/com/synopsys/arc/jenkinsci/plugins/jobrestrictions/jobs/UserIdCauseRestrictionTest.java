@@ -63,13 +63,13 @@ public class UserIdCauseRestrictionTest {
     
     // ACL.impersonate() deprecated. Replaced with ACL.as().
     private FreeStyleBuild runAsUser(final FreeStyleProject project, String username, final boolean legacyCause) 
-    		throws InterruptedException, ExecutionException, TimeoutException {
-    	User user = j.jenkins.getUser(username);
-    	final List<QueueTaskFuture<FreeStyleBuild>> scheduled = new ArrayList<QueueTaskFuture<FreeStyleBuild>>(1);
-    	try (ACLContext ctx = ACL.as(user)) {
-    		final Cause cause = legacyCause ? new Cause.UserCause() : new Cause.UserIdCause();
-    		scheduled.add(project.scheduleBuild2(0, cause));
-    	}
+            throws InterruptedException, ExecutionException, TimeoutException {
+        User user = j.jenkins.getUser(username);
+        final List<QueueTaskFuture<FreeStyleBuild>> scheduled = new ArrayList<QueueTaskFuture<FreeStyleBuild>>(1);
+        try (ACLContext ctx = ACL.as(user)) {
+            final Cause cause = legacyCause ? new Cause.UserCause() : new Cause.UserIdCause();
+            scheduled.add(project.scheduleBuild2(0, cause));
+        }
 
         Assert.assertThat(scheduled, not(nullValue()));
         return scheduled.get(0).get(1, TimeUnit.MINUTES);

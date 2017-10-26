@@ -119,27 +119,27 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
         
         // The enclosed BuildableItem has a Pipeline step task
         if (item.task.getClass().equals(PlaceholderTask.class)) {
-        	// This tasks's context is present, causes can be retrieved
-        	if (((PlaceholderTask) item.task).run() != null) {
-        		causes = ((PlaceholderTask) item.task).run().getCauses();
-        	// This task's context has not loaded yet, mostly likely due to a Jenkins' restart
-        	} else {
-        		// Context loaded and is now present
-        		if (((PlaceholderTask) item.task).runForDisplay() != null) {
-        			causes = ((PlaceholderTask) item.task).runForDisplay().getCauses();
-        		// Context cannot be loaded
-        		} else {
-        			causes = null;
-        		}
-        	}
+            // This tasks's context is present, causes can be retrieved
+            if (((PlaceholderTask) item.task).run() != null) {
+                causes = ((PlaceholderTask) item.task).run().getCauses();
+            // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
+            } else {
+                // Context loaded and is now present
+                if (((PlaceholderTask) item.task).runForDisplay() != null) {
+                    causes = ((PlaceholderTask) item.task).runForDisplay().getCauses();
+                // Context cannot be loaded
+                } else {
+                    causes = null;
+                }
+            }
         } else {
-        	causes = new ArrayList<Cause>();
-	        for (Action action : item.getAllActions()) {
-	            if (action instanceof CauseAction) {
-	                CauseAction causeAction = (CauseAction) action;
-	                causes.addAll(causeAction.getCauses());
-	            } 
-	        }
+            causes = new ArrayList<Cause>();
+            for (Action action : item.getAllActions()) {
+                if (action instanceof CauseAction) {
+                    CauseAction causeAction = (CauseAction) action;
+                    causes.addAll(causeAction.getCauses());
+                } 
+            }
         }
         return canTake(causes);
     }
