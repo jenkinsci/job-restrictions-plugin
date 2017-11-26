@@ -119,37 +119,43 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        final List<Cause> causes;
-        List<Cause> causes_placeholdertask = null;
-        
-        // The enclosed BuildableItem has a Pipeline step task
-        if (item.task instanceof PlaceholderTask) {
-            // This tasks's context is present, causes can be retrieved
-            if (((PlaceholderTask) item.task).run() != null) {
-                causes_placeholdertask = ((PlaceholderTask) item.task).run().getCauses();
-            // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
-            // Context loaded via runForDisplay() and is now present
-            } else if (((PlaceholderTask) item.task).runForDisplay() != null) {
-            	causes_placeholdertask = ((PlaceholderTask) item.task).runForDisplay().getCauses();
-            }
-            
-            if (causes_placeholdertask != null) {
-            	causes = causes_placeholdertask;
-            // Causes could not be loaded
-            } else {
-            	causes = new ArrayList<Cause>();
-            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
-            		item.task.getDisplayName(), "workflow-durable-task-step"));
-            }
-        } else {
-            causes = new ArrayList<Cause>();
-            for (Action action : item.getAllActions()) {
-                if (action instanceof CauseAction) {
-                    CauseAction causeAction = (CauseAction) action;
-                    causes.addAll(causeAction.getCauses());
-                } 
+        final List<Cause> causes = new ArrayList<>();
+
+        // Even if the item is a PlaceHolder task, we give it a chance to contribute the actions
+        // Right now an empty list is retrieved in this case
+        for (Action action : item.getAllActions()) {
+            if (action instanceof CauseAction) {
+                CauseAction causeAction = (CauseAction) action;
+                causes.addAll(causeAction.getCauses());
             }
         }
+
+        // The enclosed BuildableItem has a Pipeline step task
+        if (item.task instanceof PlaceholderTask) {
+            final PlaceholderTask placeholderTask = (PlaceholderTask)item.task;
+            boolean placeholderCausesFound = false;
+            Run<?, ?> placeholderTaskRun = placeholderTask.run();
+            if (placeholderTaskRun != null) {
+                // This tasks's context is present, causes can be retrieved
+                causes.addAll(placeholderTaskRun.getCauses());
+                placeholderCausesFound = true;
+            } else {
+                placeholderTaskRun = placeholderTask.runForDisplay();
+                if (placeholderTaskRun != null) {
+                    // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
+                    // Context loaded via runForDisplay() and is now present
+                    causes.addAll(placeholderTaskRun.getCauses());
+                    placeholderCausesFound = true;
+                }
+            }
+            
+            if (!placeholderCausesFound) {
+                // Causes could not be loaded
+            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
+                        placeholderTask, "workflow-durable-task-step"));
+            }
+        }
+
         return canTake(causes);
     }
 
