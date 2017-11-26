@@ -31,6 +31,9 @@ import hudson.model.User;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import javax.annotation.CheckForNull;
+
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -83,14 +86,15 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
         public String getDisplayName() {
             return "N/A";
         }
-        
+
+        @Restricted(NoExternalUse.class) // Stapler only
         public FormValidation doCheckSelectedUserId(@QueryParameter String selectedUserId) {
             selectedUserId = Util.fixEmptyAndTrim(selectedUserId);
             if (selectedUserId == null) {
                 return FormValidation.error("Field is empty");
             }
 
-            User user = User.get(selectedUserId, false, null);
+            User user = User.getById(selectedUserId, false);
             if (user == null) {
                 return FormValidation.warning("User " + selectedUserId + " is not registered in Jenkins");
             }

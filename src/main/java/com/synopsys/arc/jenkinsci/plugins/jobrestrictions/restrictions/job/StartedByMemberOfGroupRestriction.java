@@ -114,11 +114,11 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
      * Loads group lists for the user.
      * {@link User} info has a high priority. If there is no info, {@link UserDetails}
      * will be loaded from the current {@link SecurityRealm}.
-     * @param userId
-     * @return List of effective groups. Null if there's no info
+     * @param userId User ID
+     * @return List of effective groups. {@code null} if there's no info
      */
     private static @CheckForNull List<String> getAuthorities(@Nonnull String userId) {
-        final @CheckForNull User usr = User.get(userId, false, null);
+        final @CheckForNull User usr = User.getById(userId, false);
         if (usr == null) { // User is not registered in Jenkins (e.g. deleted)
             return getAuthoritiesFromRealm(userId);
         }
@@ -137,17 +137,12 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
      */
     private static @CheckForNull List<String> getAuthoritiesFromRealm(@Nonnull String userId) {
         final Jenkins instance = Jenkins.getInstance();
-        if (instance == null) {
-            return null; // Jenkins has not been started yet
-        }
-              
+
         @CheckForNull UserDetails userDetails = null;
         try {
             final SecurityRealm sr = instance.getSecurityRealm();   
             userDetails = sr.loadUserByUsername(userId);
-        } catch (DataAccessException ex) {
-            // fallback to null handler
-        } catch (UsernameNotFoundException ex) {
+        } catch (DataAccessException | UsernameNotFoundException ex) {
             // fallback to null handler
         }
 
