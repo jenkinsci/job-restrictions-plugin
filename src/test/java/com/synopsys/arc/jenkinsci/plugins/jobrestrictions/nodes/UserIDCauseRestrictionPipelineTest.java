@@ -57,7 +57,7 @@ public class UserIDCauseRestrictionPipelineTest {
         listUserSelector.add(new UserSelector(TEST_USERNAME));
       
         // add StartedByUser Restriction property to node
-        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
+        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, true, true, false)));
       
         // create pipeline job that will run on the test slave
         final WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
@@ -78,7 +78,7 @@ public class UserIDCauseRestrictionPipelineTest {
         listUserSelector.add(new UserSelector(TEST_USERNAME_2));
       
         // add StartedByUser Restriction property to node
-        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, false, true, false)));
+        slave.getNodeProperties().add(new JobRestrictionProperty(new StartedByUserRestriction(listUserSelector, true, true, false)));
       
         final WorkflowJob project = j.jenkins.createProject(WorkflowJob.class, "pipeline_demo");
         project.setDefinition(new CpsFlowDefinition(

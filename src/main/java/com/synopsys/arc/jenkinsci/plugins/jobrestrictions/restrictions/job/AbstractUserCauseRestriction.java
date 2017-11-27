@@ -130,32 +130,6 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             }
         }
 
-        // The enclosed BuildableItem has a Pipeline step task
-        if (item.task instanceof PlaceholderTask) {
-            final PlaceholderTask placeholderTask = (PlaceholderTask)item.task;
-            boolean placeholderCausesFound = false;
-            Run<?, ?> placeholderTaskRun = placeholderTask.run();
-            if (placeholderTaskRun != null) {
-                // This tasks's context is present, causes can be retrieved
-                causes.addAll(placeholderTaskRun.getCauses());
-                placeholderCausesFound = true;
-            } else {
-                placeholderTaskRun = placeholderTask.runForDisplay();
-                if (placeholderTaskRun != null) {
-                    // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
-                    // Context loaded via runForDisplay() and is now present
-                    causes.addAll(placeholderTaskRun.getCauses());
-                    placeholderCausesFound = true;
-                }
-            }
-            
-            if (!placeholderCausesFound) {
-                // Causes could not be loaded
-            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
-                        placeholderTask, "workflow-durable-task-step"));
-            }
-        }
-
         return canTake(causes);
     }
 
