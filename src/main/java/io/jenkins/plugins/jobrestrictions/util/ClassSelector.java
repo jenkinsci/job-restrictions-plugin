@@ -30,6 +30,7 @@ import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import javax.annotation.CheckForNull;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -90,7 +91,7 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
             }
 
             try {
-                Class.forName(selectedClass);
+                Jenkins.getInstance().getPluginManager().uberClassLoader.loadClass(_selectedClass);
             } catch (Exception ex) {
                 return FormValidation.warning("Class " + _selectedClass + " cannot be resolved: " + ex.toString());
             }
