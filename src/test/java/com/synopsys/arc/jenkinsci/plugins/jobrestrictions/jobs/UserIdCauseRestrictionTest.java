@@ -31,7 +31,7 @@ public class UserIdCauseRestrictionTest {
     @Before
     public void setupSecurityRealm() {
         j.jenkins.setSecurityRealm(j.createDummySecurityRealm());
-        j.jenkins.getUser(TEST_USERNAME);
+        User.getById(TEST_USERNAME, true);
     }
 
     @Test
