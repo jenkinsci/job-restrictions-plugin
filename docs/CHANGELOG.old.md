@@ -1,4 +1,8 @@
-# Version history
+# Version history (Archived)
+
+## Recent version
+
+See [GitHub Releases](https://github.com/jenkinsci/job-restrictions-plugin/releases)
 
 ## Version 0.8 (Oct 06, 2018)
 
