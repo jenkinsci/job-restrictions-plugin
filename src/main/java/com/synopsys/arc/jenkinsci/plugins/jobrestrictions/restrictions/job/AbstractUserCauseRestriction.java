@@ -30,10 +30,15 @@ import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Queue;
 import hudson.model.Run;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.PlaceholderTask;;
 
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
@@ -44,7 +49,7 @@ import javax.annotation.Nonnull;
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-    
+	
     /**
      * Enables the check of upstream projects
      */
@@ -104,7 +109,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // TODO: Check rebuild causes
         }
 
-        //userId has preceedence
+        //userId has precedence
         if (userIdCauseExists) {
             return userIdCause;
         } else { //If no update cause exists we should also return false...
@@ -114,12 +119,36 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        final List<Cause> causes = new ArrayList<Cause>();
-        for (Action action : item.getActions()) {
-            if (action instanceof CauseAction) {
-                CauseAction causeAction = (CauseAction) action;
-                causes.addAll(causeAction.getCauses());
-            } 
+        final List<Cause> causes;
+        List<Cause> causes_placeholdertask = null;
+        
+        // The enclosed BuildableItem has a Pipeline step task
+        if (item.task instanceof PlaceholderTask) {
+            // This tasks's context is present, causes can be retrieved
+            if (((PlaceholderTask) item.task).run() != null) {
+                causes_placeholdertask = ((PlaceholderTask) item.task).run().getCauses();
+            // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
+            // Context loaded via runForDisplay() and is now present
+            } else if (((PlaceholderTask) item.task).runForDisplay() != null) {
+            	causes_placeholdertask = ((PlaceholderTask) item.task).runForDisplay().getCauses();
+            }
+            
+            if (causes_placeholdertask != null) {
+            	causes = causes_placeholdertask;
+            // Causes could not be loaded
+            } else {
+            	causes = new ArrayList<Cause>();
+            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
+            		item.task.getDisplayName(), "workflow-durable-task-step"));
+            }
+        } else {
+            causes = new ArrayList<Cause>();
+            for (Action action : item.getAllActions()) {
+                if (action instanceof CauseAction) {
+                    CauseAction causeAction = (CauseAction) action;
+                    causes.addAll(causeAction.getCauses());
+                } 
+            }
         }
         return canTake(causes);
     }
@@ -128,4 +157,6 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return canTake(run.getCauses());
     }
+    
+    private static final Logger LOGGER = Logger.getLogger(AbstractUserCauseRestriction.class.getName());
 }
