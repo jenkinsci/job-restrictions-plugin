@@ -30,10 +30,15 @@ import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Queue;
 import hudson.model.Run;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.PlaceholderTask;;
 
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
@@ -44,7 +49,7 @@ import javax.annotation.Nonnull;
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-    
+	
     /**
      * Enables the check of upstream projects
      */
@@ -104,7 +109,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // TODO: Check rebuild causes
         }
 
-        //userId has preceedence
+        //userId has precedence
         if (userIdCauseExists) {
             return userIdCause;
         } else { //If no update cause exists we should also return false...
@@ -114,13 +119,17 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        final List<Cause> causes = new ArrayList<Cause>();
-        for (Action action : item.getActions()) {
+        final List<Cause> causes = new ArrayList<>();
+
+        // Even if the item is a PlaceHolder task, we give it a chance to contribute the actions
+        // Right now an empty list is retrieved in this case
+        for (Action action : item.getAllActions()) {
             if (action instanceof CauseAction) {
                 CauseAction causeAction = (CauseAction) action;
                 causes.addAll(causeAction.getCauses());
-            } 
+            }
         }
+
         return canTake(causes);
     }
 
@@ -128,4 +137,6 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return canTake(run.getCauses());
     }
+    
+    private static final Logger LOGGER = Logger.getLogger(AbstractUserCauseRestriction.class.getName());
 }
