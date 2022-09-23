@@ -34,7 +34,7 @@ import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * The extension point, which allows to restrict job executions.
@@ -53,7 +53,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @param item An item to be checked
      * @return true if the node can take the item
      */
-    public abstract boolean canTake(@Nonnull Queue.BuildableItem item);
+    public abstract boolean canTake(@NonNull Queue.BuildableItem item);
         
     /**
      * Check if the {@link Job} can be executed according to the specified {@link Run}.
@@ -61,7 +61,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @param run A {@link Run} to be checked 
      * @return true if the build can be executed
      */
-    public abstract boolean canTake(@Nonnull Run run);
+    public abstract boolean canTake(@NonNull Run run);
 
     @Override
     public JobRestrictionDescriptor getDescriptor() {

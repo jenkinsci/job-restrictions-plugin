@@ -35,7 +35,7 @@ import hudson.model.Run;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -58,12 +58,12 @@ public class JobClassNameRestriction extends JobRestriction {
         this.jobClasses = jobClasses;
     }
 
-    @Nonnull
+    @NonNull
     public List<ClassSelector> getJobClasses() {
         return jobClasses;
     }
         
-    @Nonnull 
+    @NonNull 
     private synchronized Set<String> getAcceptedJobClasses() {
         if (acceptedClassesHash == null) {
             final List<ClassSelector> selectors = getJobClasses();

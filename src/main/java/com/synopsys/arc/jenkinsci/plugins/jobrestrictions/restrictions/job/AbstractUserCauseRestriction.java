@@ -33,7 +33,7 @@ import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
@@ -66,7 +66,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
      */
     abstract protected boolean acceptsUser(@CheckForNull String userId); 
     
-    /* package */ boolean canTake(@Nonnull List<Cause> causes) {
+    /* package */ boolean canTake(@NonNull List<Cause> causes) {
         boolean userIdCause = false;
         boolean rebuildCause = false;
         boolean upstreamCause = false;
