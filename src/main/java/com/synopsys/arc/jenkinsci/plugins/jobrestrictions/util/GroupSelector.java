@@ -50,6 +50,7 @@ import org.springframework.dao.DataAccessException;
  */
 //TODO: Autocompletion
 public class GroupSelector implements Describable<GroupSelector>, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**ID of the user*/
     @CheckForNull String selectedGroupId;

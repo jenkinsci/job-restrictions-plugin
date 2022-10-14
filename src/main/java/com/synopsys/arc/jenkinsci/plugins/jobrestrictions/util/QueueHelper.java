@@ -53,7 +53,7 @@ public class QueueHelper {
         // this is only executed if we didn't call Item.getFullName() in getItemName
         while (!(current instanceof Item)) {
             Queue.Task parent = current.getOwnerTask();
-            if (parent == current || parent == null) {
+            if (parent == current) {
                 break;
             }
             res = getItemName(parent) + "/" + res;

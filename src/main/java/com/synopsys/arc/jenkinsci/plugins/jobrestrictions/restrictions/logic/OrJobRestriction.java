@@ -38,6 +38,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @see MultipleOrJobRestriction
  */
 public class OrJobRestriction extends JobRestriction {
+    private static final long serialVersionUID = 1L;
+
     JobRestriction first;
     JobRestriction second;
 
