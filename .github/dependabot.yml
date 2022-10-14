@@ -12,4 +12,3 @@ updates:
   - gounthar
   labels:
   - skip-changelog
-git add .github/dependabot.yml
