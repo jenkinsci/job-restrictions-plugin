@@ -40,6 +40,7 @@ import org.kohsuke.stapler.QueryParameter;
  * @since TODO
  */
 public class ClassSelector implements Describable<ClassSelector>, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**ID of the user*/
     final @CheckForNull String selectedClass;

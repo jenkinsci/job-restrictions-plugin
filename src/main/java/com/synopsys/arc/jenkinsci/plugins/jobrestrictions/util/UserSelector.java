@@ -43,6 +43,7 @@ import org.kohsuke.stapler.QueryParameter;
  */
 //TODO: Autocompletion
 public class UserSelector implements Describable<UserSelector>, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**ID of the user*/
     @CheckForNull String selectedUserId;

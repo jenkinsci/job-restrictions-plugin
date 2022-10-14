@@ -41,6 +41,8 @@ import org.kohsuke.stapler.QueryParameter;
  * @author Oleg Nenashev
  */
 public class RegexNameRestriction extends JobRestriction {
+    private static final long serialVersionUID = 1L;
+    
     String regexExpression;
     boolean checkShortName;
     
