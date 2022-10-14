@@ -8,7 +8,7 @@ updates:
   target-branch: master
   reviewers:
   - MarkEWaite
-  - jmmeessen
+  - jmMeessen
   - gounthar
   labels:
   - skip-changelog
