@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import jenkins.model.Jenkins;
 
@@ -79,7 +79,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         return groupList;
     }
 
-    private synchronized @Nonnull Set<String> getAcceptedGroups() {
+    private synchronized @NonNull Set<String> getAcceptedGroups() {
         if (acceptedGroups == null) {
             final List<GroupSelector> selectors = getGroupList();
             acceptedGroups = new HashSet<String>(selectors.size());
@@ -117,7 +117,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
      * @param userId User ID
      * @return List of effective groups. {@code null} if there's no info
      */
-    private static @CheckForNull List<String> getAuthorities(@Nonnull String userId) {
+    private static @CheckForNull List<String> getAuthorities(@NonNull String userId) {
         final @CheckForNull User usr = User.getById(userId, false);
         if (usr == null) { // User is not registered in Jenkins (e.g. deleted)
             return getAuthoritiesFromRealm(userId);
@@ -135,7 +135,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
      * @param userId
      * @return List of effective groups. Null if there's no info
      */
-    private static @CheckForNull List<String> getAuthoritiesFromRealm(@Nonnull String userId) {
+    private static @CheckForNull List<String> getAuthoritiesFromRealm(@NonNull String userId) {
         final Jenkins instance = Jenkins.getInstance();
 
         @CheckForNull UserDetails userDetails = null;

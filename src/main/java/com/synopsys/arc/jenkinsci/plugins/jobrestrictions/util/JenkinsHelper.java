@@ -23,7 +23,7 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import jenkins.model.Jenkins;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
@@ -40,7 +40,7 @@ public class JenkinsHelper {
      * @return {@link Jenkins} instance
      * @throws IllegalStateException {@link Jenkins} has not been started, or was already shut down
      */
-    @Nonnull
+    @NonNull
     public static Jenkins getInstanceOrDie() throws IllegalStateException {
         final Jenkins instance = Jenkins.getInstance();
         if (instance == null) {

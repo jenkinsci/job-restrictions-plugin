@@ -29,7 +29,7 @@ import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -56,7 +56,7 @@ public class JobRestrictionPropertyConfig implements Describable<JobRestrictionP
         return userIdCauseRestriction;
     }
 
-    public void validateCause(@Nonnull Cause cause, @Nonnull BuildListener listener) throws AbortException { 
+    public void validateCause(@NonNull Cause cause, @NonNull BuildListener listener) throws AbortException {
        if (upstreamCauseRestriction != null && cause instanceof Cause.UpstreamCause) {
            upstreamCauseRestriction.validate((Cause.UpstreamCause)cause);
        }    

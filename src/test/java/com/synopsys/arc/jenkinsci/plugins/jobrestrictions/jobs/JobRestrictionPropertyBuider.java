@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import hudson.model.Job;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Created by nenashev on 31/07/16.
@@ -18,13 +18,13 @@ public class JobRestrictionPropertyBuider {
         causeRestrictions = new LinkedList<JobCauseRestriction>();
     }
 
-    @Nonnull
+    @NonNull
     public static JobRestrictionPropertyBuider create() {
         return new JobRestrictionPropertyBuider();
     }
 
-    @Nonnull
-    public JobRestrictionPropertyBuider addCauseRestriction(@Nonnull JobCauseRestriction restriction) {
+    @NonNull
+    public JobRestrictionPropertyBuider addCauseRestriction(@NonNull JobCauseRestriction restriction) {
         causeRestrictions.add(restriction);
         return this;
     }

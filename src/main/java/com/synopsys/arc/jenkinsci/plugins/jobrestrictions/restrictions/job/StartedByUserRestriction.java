@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -76,7 +76,7 @@ public class StartedByUserRestriction extends AbstractUserCauseRestriction {
         return acceptAnonymousUsers;
     }
         
-    private synchronized @Nonnull Set<String> getAcceptedUsers() {
+    private synchronized @NonNull Set<String> getAcceptedUsers() {
         if (acceptedUsers == null) {
             final List<UserSelector> selectors = getUsersList();
             acceptedUsers = new HashSet<String>(selectors.size());
