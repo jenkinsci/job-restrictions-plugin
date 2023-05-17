@@ -82,7 +82,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
     private synchronized @NonNull Set<String> getAcceptedGroups() {
         if (acceptedGroups == null) {
             final List<GroupSelector> selectors = getGroupList();
-            acceptedGroups = new HashSet<String>(selectors.size());
+            acceptedGroups = new HashSet<>(selectors.size());
             for (GroupSelector selector : selectors) {
                 // merge equal entries
                 acceptedGroups.add(selector.getSelectedGroupId());
@@ -136,7 +136,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
      * @return List of effective groups. Null if there's no info
      */
     private static @CheckForNull List<String> getAuthoritiesFromRealm(@NonNull String userId) {
-        final Jenkins instance = Jenkins.getInstance();
+        final Jenkins instance = Jenkins.get();
 
         @CheckForNull UserDetails userDetails = null;
         try {
@@ -151,7 +151,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         }
 
         GrantedAuthority[] authorities = userDetails.getAuthorities();
-        List<String> authorityList = new ArrayList<String>(authorities.length);
+        List<String> authorityList = new ArrayList<>(authorities.length);
         for (GrantedAuthority auth : authorities) {
             authorityList.add(auth.getAuthority());
         }
