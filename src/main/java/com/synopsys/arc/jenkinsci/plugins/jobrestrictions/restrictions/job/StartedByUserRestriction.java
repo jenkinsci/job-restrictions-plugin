@@ -79,7 +79,7 @@ public class StartedByUserRestriction extends AbstractUserCauseRestriction {
     private synchronized @NonNull Set<String> getAcceptedUsers() {
         if (acceptedUsers == null) {
             final List<UserSelector> selectors = getUsersList();
-            acceptedUsers = new HashSet<String>(selectors.size());
+            acceptedUsers = new HashSet<>(selectors.size());
             for (UserSelector selector : selectors) {
                 acceptedUsers.add(selector.getSelectedUserId()); // merge equal entries
             }

@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Ignore;
 
 /**

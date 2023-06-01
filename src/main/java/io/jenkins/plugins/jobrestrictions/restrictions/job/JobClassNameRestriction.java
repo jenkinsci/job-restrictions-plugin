@@ -67,7 +67,7 @@ public class JobClassNameRestriction extends JobRestriction {
     private synchronized Set<String> getAcceptedJobClasses() {
         if (acceptedClassesHash == null) {
             final List<ClassSelector> selectors = getJobClasses();
-            acceptedClassesHash = new HashSet<String>(selectors.size());
+            acceptedClassesHash = new HashSet<>(selectors.size());
             for (ClassSelector selector : selectors) {
                 acceptedClassesHash.add(selector.getSelectedClass()); // merge equal entries
             }

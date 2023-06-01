@@ -30,6 +30,7 @@ import hudson.model.Descriptor;
 import hudson.model.User;
 import hudson.util.FormValidation;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
 
 import org.kohsuke.accmod.Restricted;
@@ -67,7 +68,7 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
     public boolean equals(Object obj) {       
         if (obj instanceof UserSelector) {
             UserSelector cmp = (UserSelector)obj;
-            return selectedUserId != null ? selectedUserId.equals(cmp.selectedUserId) : cmp.selectedUserId == null;
+            return Objects.equals(selectedUserId, cmp.selectedUserId);
         }           
         return false;    
     }

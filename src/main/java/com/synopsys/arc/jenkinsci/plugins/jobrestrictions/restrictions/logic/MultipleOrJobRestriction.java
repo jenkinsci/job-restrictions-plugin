@@ -44,7 +44,7 @@ public class MultipleOrJobRestriction extends JobRestriction {
 
     @DataBoundConstructor
     public MultipleOrJobRestriction(ArrayList<JobRestriction> restrictions) {
-        this.restrictions = restrictions != null ? restrictions : new ArrayList<JobRestriction>();
+        this.restrictions = restrictions != null ? restrictions : new ArrayList<>();
     }
 
     public ArrayList<JobRestriction> getRestrictions() {
