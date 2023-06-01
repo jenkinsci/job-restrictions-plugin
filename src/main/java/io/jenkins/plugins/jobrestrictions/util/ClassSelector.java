@@ -23,13 +23,16 @@
  */
 package io.jenkins.plugins.jobrestrictions.util;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.annotation.CheckForNull;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -39,6 +42,7 @@ import org.kohsuke.stapler.QueryParameter;
  * @since TODO
  */
 public class ClassSelector implements Describable<ClassSelector>, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**ID of the user*/
     final @CheckForNull String selectedClass;
@@ -62,7 +66,7 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
     public boolean equals(Object obj) {       
         if (obj instanceof ClassSelector) {
             ClassSelector cmp = (ClassSelector)obj;
-            return selectedClass != null ? selectedClass.equals(cmp.selectedClass) : cmp.selectedClass == null;
+            return Objects.equals(selectedClass, cmp.selectedClass);
         }           
         return false;    
     }
@@ -78,6 +82,7 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
     public static class DescriptorImpl extends Descriptor<ClassSelector> {
         
+        @NonNull
         @Override
         public String getDisplayName() {
             return "N/A";
@@ -90,7 +95,7 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
             }
 
             try {
-                Class.forName(selectedClass);
+                Jenkins.get().getPluginManager().uberClassLoader.loadClass(_selectedClass);
             } catch (Exception ex) {
                 return FormValidation.warning("Class " + _selectedClass + " cannot be resolved: " + ex.toString());
             }

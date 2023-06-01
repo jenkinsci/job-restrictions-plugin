@@ -38,7 +38,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @see MultipleAndJobRestriction
  */
 public class AndJobRestriction extends JobRestriction {
-
+    private static final long serialVersionUID = 1L;
+    
     JobRestriction first;
     JobRestriction second;
 

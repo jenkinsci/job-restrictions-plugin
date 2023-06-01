@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.PlaceholderTask;;
 
 /**
@@ -71,7 +71,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
      */
     abstract protected boolean acceptsUser(@CheckForNull String userId); 
     
-    /* package */ boolean canTake(@Nonnull List<Cause> causes) {
+    /* package */ boolean canTake(@NonNull List<Cause> causes) {
         boolean userIdCause = false;
         boolean rebuildCause = false;
         boolean upstreamCause = false;

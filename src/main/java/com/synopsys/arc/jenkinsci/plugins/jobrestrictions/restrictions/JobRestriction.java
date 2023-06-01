@@ -24,7 +24,6 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic.AnyJobRestriction;
-import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.JenkinsHelper;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
@@ -34,7 +33,8 @@ import hudson.model.Queue;
 import hudson.model.Run;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import jenkins.model.Jenkins;
 
 /**
  * The extension point, which allows to restrict job executions.
@@ -53,7 +53,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @param item An item to be checked
      * @return true if the node can take the item
      */
-    public abstract boolean canTake(@Nonnull Queue.BuildableItem item);
+    public abstract boolean canTake(@NonNull Queue.BuildableItem item);
         
     /**
      * Check if the {@link Job} can be executed according to the specified {@link Run}.
@@ -61,11 +61,11 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @param run A {@link Run} to be checked 
      * @return true if the build can be executed
      */
-    public abstract boolean canTake(@Nonnull Run run);
+    public abstract boolean canTake(@NonNull Run run);
 
     @Override
     public JobRestrictionDescriptor getDescriptor() {
-        return (JobRestrictionDescriptor) JenkinsHelper.getInstanceOrDie().getDescriptorOrDie(getClass());
+        return (JobRestrictionDescriptor) Jenkins.get().getDescriptorOrDie(getClass());
     }
 
     /**
@@ -73,8 +73,7 @@ public abstract class JobRestriction implements ExtensionPoint, Describable<JobR
      * @return List of {@link JobRestriction}s.
      */    
     public static DescriptorExtensionList<JobRestriction,JobRestrictionDescriptor> all() {
-        return JenkinsHelper.getInstanceOrDie().<JobRestriction,JobRestrictionDescriptor>getDescriptorList
-            (JobRestriction.class);
+        return Jenkins.get().getDescriptorList(JobRestriction.class);
     }
     
     /**
