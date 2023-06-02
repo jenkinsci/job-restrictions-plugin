@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Ignore;
 
 /**
@@ -31,7 +30,7 @@ public class UserIdCauseRestrictionTest {
     @Before
     public void setupSecurityRealm() {
         j.jenkins.setSecurityRealm(j.createDummySecurityRealm());
-        j.jenkins.getUser(TEST_USERNAME);
+        User.getById(TEST_USERNAME, true);
     }
 
     @Test

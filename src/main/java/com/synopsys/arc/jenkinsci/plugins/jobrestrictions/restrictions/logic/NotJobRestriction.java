@@ -37,6 +37,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Oleg Nenashev
  */
 public class NotJobRestriction extends JobRestriction {
+    private static final long serialVersionUID = 1L;
+    
     JobRestriction restriction;
 
     @DataBoundConstructor

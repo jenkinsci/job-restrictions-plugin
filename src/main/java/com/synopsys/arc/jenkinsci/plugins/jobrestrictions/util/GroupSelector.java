@@ -35,9 +35,11 @@ import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.annotation.CheckForNull;
 
+import jenkins.model.Jenkins;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -50,6 +52,7 @@ import org.springframework.dao.DataAccessException;
  */
 //TODO: Autocompletion
 public class GroupSelector implements Describable<GroupSelector>, Serializable {
+    private static final long serialVersionUID = 1L;
     
     /**ID of the user*/
     @CheckForNull String selectedGroupId;
@@ -73,7 +76,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
     public boolean equals(Object obj) {       
         if (obj instanceof GroupSelector) {
             GroupSelector cmp = (GroupSelector)obj;
-            return selectedGroupId != null ? selectedGroupId.equals(cmp.selectedGroupId) : cmp.selectedGroupId == null;
+            return Objects.equals(selectedGroupId, cmp.selectedGroupId);
         }           
         return false;    
     }
@@ -96,7 +99,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         
         public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
-            SecurityRealm sr = JenkinsHelper.getInstanceOrDie().getSecurityRealm();
+            SecurityRealm sr = Jenkins.get().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
             if (selectedGroupId == null) {
                 return FormValidation.error("Field is empty");

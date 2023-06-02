@@ -23,7 +23,7 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 import hudson.model.Item;
 import hudson.model.Job;
@@ -46,14 +46,14 @@ public class QueueHelper {
      * @return String in the {@link Job#getFullName()} format (a/b/c/d)
      */
     @Deprecated
-    public static String getFullName(@Nonnull Queue.BuildableItem item) {
+    public static String getFullName(@NonNull Queue.BuildableItem item) {
         Queue.Task current = item.task;
         String res = getItemName(current);
 
         // this is only executed if we didn't call Item.getFullName() in getItemName
         while (!(current instanceof Item)) {
             Queue.Task parent = current.getOwnerTask();
-            if (parent == current || parent == null) {
+            if (parent == current) {
                 break;
             }
             res = getItemName(parent) + "/" + res;

@@ -29,11 +29,13 @@ import hudson.matrix.MatrixProject;
 import hudson.model.Action;
 import hudson.model.Queue;
 import hudson.model.FreeStyleProject;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.Issue;
@@ -52,7 +54,7 @@ public class JobClassNameRestrictionTest {
     @Test
     public void shouldRestrictJobClass() throws Exception {
         JobClassNameRestriction jobClassNameRestriction = new JobClassNameRestriction(
-                Arrays.asList(new ClassSelector(FreeStyleProject.class.getName())));
+                List.of(new ClassSelector(FreeStyleProject.class.getName())));
         JobRestrictionProperty prop = new JobRestrictionProperty(jobClassNameRestriction);
         
         FreeStyleProject freestylePrj = j.createFreeStyleProject();
