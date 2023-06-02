@@ -37,7 +37,7 @@ import hudson.util.FormValidation.Kind;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 import jenkins.model.Jenkins;
 import org.acegisecurity.AuthenticationException;
