@@ -49,7 +49,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.Placeh
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-	
+    
     /**
      * Enables the check of upstream projects
      */
@@ -109,7 +109,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // TODO: Check rebuild causes
         }
 
-        //userId has precedence
+        //userId has preceedence
         if (userIdCauseExists) {
             return userIdCause;
         } else { //If no update cause exists we should also return false...
@@ -121,7 +121,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Queue.BuildableItem item) {
         final List<Cause> causes;
         List<Cause> causes_placeholdertask = null;
-        
+
         // The enclosed BuildableItem has a Pipeline step task
         if (item.task instanceof PlaceholderTask) {
             // This tasks's context is present, causes can be retrieved
@@ -130,16 +130,16 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
             // Context loaded via runForDisplay() and is now present
             } else if (((PlaceholderTask) item.task).runForDisplay() != null) {
-            	causes_placeholdertask = ((PlaceholderTask) item.task).runForDisplay().getCauses();
+                causes_placeholdertask = ((PlaceholderTask) item.task).runForDisplay().getCauses();
             }
-            
+
             if (causes_placeholdertask != null) {
-            	causes = causes_placeholdertask;
+                causes = causes_placeholdertask;
             // Causes could not be loaded
             } else {
-            	causes = new ArrayList<Cause>();
-            	LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
-            		item.task.getDisplayName(), "workflow-durable-task-step"));
+                causes = new ArrayList<Cause>();
+                LOGGER.severe(MessageFormat.format("PlaceholderTask {0} from plugin {1} could not have its causes retrieved.",
+                                                   item.task.getDisplayName(), "workflow-durable-task-step"));
             }
         } else {
             causes = new ArrayList<Cause>();
@@ -147,7 +147,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
                 if (action instanceof CauseAction) {
                     CauseAction causeAction = (CauseAction) action;
                     causes.addAll(causeAction.getCauses());
-                } 
+                }
             }
         }
         return canTake(causes);
@@ -157,6 +157,6 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return canTake(run.getCauses());
     }
-    
+
     private static final Logger LOGGER = Logger.getLogger(AbstractUserCauseRestriction.class.getName());
 }
