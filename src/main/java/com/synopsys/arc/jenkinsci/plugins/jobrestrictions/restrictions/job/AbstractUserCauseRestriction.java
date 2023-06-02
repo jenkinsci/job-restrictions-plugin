@@ -30,15 +30,10 @@ import hudson.model.Cause;
 import hudson.model.CauseAction;
 import hudson.model.Queue;
 import hudson.model.Run;
-
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.PlaceholderTask;;
 
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
@@ -49,7 +44,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution.Placeh
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-	
+    
     /**
      * Enables the check of upstream projects
      */
@@ -109,7 +104,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // TODO: Check rebuild causes
         }
 
-        //userId has precedence
+        //userId has preceedence
         if (userIdCauseExists) {
             return userIdCause;
         } else { //If no update cause exists we should also return false...
@@ -127,9 +122,8 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             if (action instanceof CauseAction) {
                 CauseAction causeAction = (CauseAction) action;
                 causes.addAll(causeAction.getCauses());
-            }
+            } 
         }
-
         return canTake(causes);
     }
 
@@ -137,6 +131,4 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return canTake(run.getCauses());
     }
-    
-    private static final Logger LOGGER = Logger.getLogger(AbstractUserCauseRestriction.class.getName());
 }
