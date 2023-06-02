@@ -32,7 +32,7 @@ import hudson.Extension;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 

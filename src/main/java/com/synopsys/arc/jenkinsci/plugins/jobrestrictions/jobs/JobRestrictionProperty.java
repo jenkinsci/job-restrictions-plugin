@@ -36,7 +36,7 @@ import hudson.model.JobPropertyDescriptor;
 import hudson.slaves.NodeProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * A {@link NodeProperty}, which manages {@link JobRestriction}s for {@link AbstractBuild}s.

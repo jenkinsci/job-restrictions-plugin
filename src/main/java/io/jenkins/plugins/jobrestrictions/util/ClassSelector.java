@@ -31,7 +31,7 @@ import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;

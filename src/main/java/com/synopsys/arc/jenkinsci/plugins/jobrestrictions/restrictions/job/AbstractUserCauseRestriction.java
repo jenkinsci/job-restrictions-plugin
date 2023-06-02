@@ -32,7 +32,7 @@ import hudson.model.Queue;
 import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**

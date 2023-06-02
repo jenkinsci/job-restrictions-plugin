@@ -31,7 +31,7 @@ import hudson.model.User;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.annotation.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;

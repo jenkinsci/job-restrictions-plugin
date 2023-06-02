@@ -99,7 +99,7 @@ public class UserIDCauseRestrictionPipelineTest {
         assertThat("The task is not blocked", buildableItems.get(0).getCauseOfBlockage(), not(nullValue()));
     }
 
-    @Nonnull
+    @NonNull
     private QueueTaskFuture<WorkflowRun> runAsUser(WorkflowJob job, String username)
             throws InterruptedException, ExecutionException {
         QueueTaskFuture<WorkflowRun> runFuture;
@@ -113,7 +113,7 @@ public class UserIDCauseRestrictionPipelineTest {
         return runFuture;
     }
 
-    @Nonnull
+    @NonNull
     private WorkflowRun runAsUserAndWaitForCompletion(WorkflowJob job, String username)
             throws InterruptedException, ExecutionException {
         // We have a test timeout, extra timeout is not needed
