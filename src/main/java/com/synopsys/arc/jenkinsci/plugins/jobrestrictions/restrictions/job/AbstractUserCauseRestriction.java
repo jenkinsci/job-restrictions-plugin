@@ -125,12 +125,16 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
         // The enclosed BuildableItem has a Pipeline step task
         if (item.task instanceof PlaceholderTask) {
             // This tasks's context is present, causes can be retrieved
-            if (((PlaceholderTask) item.task).run() != null) {
-                causes_placeholdertask = ((PlaceholderTask) item.task).run().getCauses();
+            Run run = ((PlaceholderTask) item.task).run();
+            if (run != null) {
+                causes_placeholdertask = run.getCauses();
             // This task's context has not loaded yet, mostly likely due to a Jenkins' restart
             // Context loaded via runForDisplay() and is now present
-            } else if (((PlaceholderTask) item.task).runForDisplay() != null) {
-                causes_placeholdertask = ((PlaceholderTask) item.task).runForDisplay().getCauses();
+            } else {
+                Run runForDisplay = ((PlaceholderTask) item.task).runForDisplay();
+                if (runForDisplay != null) {
+                    causes_placeholdertask = runForDisplay.getCauses();
+                }
             }
 
             if (causes_placeholdertask != null) {
