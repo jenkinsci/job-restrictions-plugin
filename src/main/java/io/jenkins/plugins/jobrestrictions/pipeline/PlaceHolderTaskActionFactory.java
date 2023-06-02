@@ -33,7 +33,6 @@ public class PlaceHolderTaskActionFactory extends TransientActionFactory<Queue.B
     private static final Logger LOGGER = Logger.getLogger(PlaceHolderTaskActionFactory.class.getName());
 
     static {
-        Class<?> wrappedClass = ExecutorStepExecution.PlaceholderTask.class;
         LOGGER.log(Level.FINE, "Instantiated a PlaceholderTask action factory");
     }
 
