@@ -3,6 +3,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 import hudson.model.*;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.security.ACL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -10,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,7 +71,7 @@ public class UserIdCauseRestrictionTest {
             }
         });
         
-        Assert.assertThat(scheduled, not(nullValue()));
+        assertThat(scheduled, not(nullValue()));
         return scheduled.get(0).get(1, TimeUnit.MINUTES);
     }
 }
