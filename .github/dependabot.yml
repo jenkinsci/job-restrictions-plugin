@@ -1,5 +1,5 @@
-# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
----
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
 version: 2
 updates:
   - package-ecosystem: "maven"
@@ -7,10 +7,8 @@ updates:
     labels:
       - "dependencies"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
   - package-ecosystem: "github-actions"
     directory: "/"
-    labels:
-      - "skip-changelog"
     schedule:
-      interval: "monthly"
+      interval: "weekly"

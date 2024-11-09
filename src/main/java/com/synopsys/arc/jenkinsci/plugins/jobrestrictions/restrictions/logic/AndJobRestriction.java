@@ -23,9 +23,10 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
+import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
+
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
@@ -39,7 +40,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  */
 public class AndJobRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
-    
+
     JobRestriction first;
     JobRestriction second;
 
@@ -56,7 +57,7 @@ public class AndJobRestriction extends JobRestriction {
     public JobRestriction getSecond() {
         return second;
     }
-    
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         return first.canTake(item) && second.canTake(item);
@@ -66,7 +67,7 @@ public class AndJobRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return first.canTake(run) && second.canTake(run);
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
