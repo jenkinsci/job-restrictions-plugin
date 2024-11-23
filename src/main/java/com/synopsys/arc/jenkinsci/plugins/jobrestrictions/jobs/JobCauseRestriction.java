@@ -33,12 +33,13 @@ import hudson.model.Descriptor;
  * @param <TCause> A cause type to be checked
  * @author Oleg Nenashev
  */
-public abstract class JobCauseRestriction<TCause extends Cause>  
-    implements Describable<JobCauseRestriction<? extends Cause>>  {
-    
-    public abstract void validate (TCause cause) throws AbortException;
-    
-    public abstract static class JobCauseRestrictionDescriptor extends Descriptor<JobCauseRestriction<? extends Cause>> {
+public abstract class JobCauseRestriction<TCause extends Cause>
+        implements Describable<JobCauseRestriction<? extends Cause>> {
+
+    public abstract void validate(TCause cause) throws AbortException;
+
+    public abstract static class JobCauseRestrictionDescriptor
+            extends Descriptor<JobCauseRestriction<? extends Cause>> {
         // Empty class
     }
 }

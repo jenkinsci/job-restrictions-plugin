@@ -23,6 +23,7 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Describable;
@@ -31,8 +32,6 @@ import hudson.model.User;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import java.util.Objects;
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -42,12 +41,13 @@ import org.kohsuke.stapler.QueryParameter;
  * Describable Item, which allows to configure a user.
  * @since 0.4
  */
-//TODO: Autocompletion
+// TODO: Autocompletion
 public class UserSelector implements Describable<UserSelector>, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**ID of the user*/
-    @CheckForNull String selectedUserId;
+    @CheckForNull
+    String selectedUserId;
 
     @DataBoundConstructor
     public UserSelector(@CheckForNull String selectedUserId) {
@@ -65,12 +65,12 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {       
+    public boolean equals(Object obj) {
         if (obj instanceof UserSelector) {
-            UserSelector cmp = (UserSelector)obj;
+            UserSelector cmp = (UserSelector) obj;
             return Objects.equals(selectedUserId, cmp.selectedUserId);
-        }           
-        return false;    
+        }
+        return false;
     }
 
     @Override
@@ -79,11 +79,12 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
         hash = 17 * hash + (selectedUserId != null ? selectedUserId.hashCode() : 0);
         return hash;
     }
-          
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends Descriptor<UserSelector> {
-        
+
         @Override
         public String getDisplayName() {
             return "N/A";

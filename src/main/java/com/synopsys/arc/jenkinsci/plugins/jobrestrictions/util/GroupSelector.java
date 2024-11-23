@@ -23,22 +23,19 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.Extension;
 import hudson.Functions;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.security.SecurityRealm;
 import hudson.security.GroupDetails;
+import hudson.security.SecurityRealm;
 import hudson.security.UserMayOrMayNotExistException;
 import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
-
 import java.io.Serializable;
 import java.util.Objects;
-
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-
 import jenkins.model.Jenkins;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
@@ -50,12 +47,13 @@ import org.springframework.dao.DataAccessException;
  * Describable Item, which allows to configure a group.
  * @since 0.4
  */
-//TODO: Autocompletion
+// TODO: Autocompletion
 public class GroupSelector implements Describable<GroupSelector>, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**ID of the user*/
-    @CheckForNull String selectedGroupId;
+    @CheckForNull
+    String selectedGroupId;
 
     @DataBoundConstructor
     public GroupSelector(@CheckForNull String selectedGroupId) {
@@ -73,12 +71,12 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {       
+    public boolean equals(Object obj) {
         if (obj instanceof GroupSelector) {
-            GroupSelector cmp = (GroupSelector)obj;
+            GroupSelector cmp = (GroupSelector) obj;
             return Objects.equals(selectedGroupId, cmp.selectedGroupId);
-        }           
-        return false;    
+        }
+        return false;
     }
 
     @Override
@@ -87,16 +85,17 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         hash = 17 * hash + (selectedGroupId != null ? selectedGroupId.hashCode() : 0);
         return hash;
     }
-          
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends Descriptor<GroupSelector> {
-        
+
         @Override
         public String getDisplayName() {
             return "N/A";
         }
-        
+
         public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
             SecurityRealm sr = Jenkins.get().getSecurityRealm();
@@ -104,25 +103,25 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
             if (selectedGroupId == null) {
                 return FormValidation.error("Field is empty");
             }
-            
-            if(selectedGroupId.equals("authenticated"))
+
+            if (selectedGroupId.equals("authenticated"))
                 // system reserved group
                 return FormValidation.ok();
-            
+
             try {
                 GroupDetails details = sr.loadGroupByGroupname(selectedGroupId);
-                if(details==null)
-                	return FormValidation.warning("Group " + selectedGroupId + " is not registered in Jenkins");
+                if (details == null)
+                    return FormValidation.warning("Group " + selectedGroupId + " is not registered in Jenkins");
                 return FormValidation.ok();
             } catch (UserMayOrMayNotExistException e) {
                 // undecidable, meaning the group may exist
                 return FormValidation.respond(Kind.OK, eSelectedGroupId);
             } catch (UsernameNotFoundException e) {
-            	// fall through next
+                // fall through next
             } catch (DataAccessException e) {
-            	// fall through next
+                // fall through next
             } catch (AuthenticationException e) {
-            	// fall through next
+                // fall through next
             }
             return FormValidation.warning("Group " + selectedGroupId + " is not registered in Jenkins");
         }

@@ -32,9 +32,8 @@ import hudson.model.queue.CauseOfBlockage;
 public class JobRestrictionBlockageCause extends CauseOfBlockage {
 
     String message;
-    public static final JobRestrictionBlockageCause DEFAULT = 
-            new JobRestrictionBlockageCause("");
-    
+    public static final JobRestrictionBlockageCause DEFAULT = new JobRestrictionBlockageCause("");
+
     public JobRestrictionBlockageCause(String message) {
         this.message = message;
     }
@@ -42,10 +41,9 @@ public class JobRestrictionBlockageCause extends CauseOfBlockage {
     public String getMessage() {
         return message;
     }
-    
+
     @Override
     public String getShortDescription() {
         return message;
     }
-    
 }

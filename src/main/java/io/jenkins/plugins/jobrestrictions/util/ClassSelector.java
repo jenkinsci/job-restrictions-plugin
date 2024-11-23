@@ -23,6 +23,7 @@
  */
 package io.jenkins.plugins.jobrestrictions.util;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
@@ -31,7 +32,6 @@ import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import java.util.Objects;
-import edu.umd.cs.findbugs.annotations.CheckForNull;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -43,7 +43,7 @@ import org.kohsuke.stapler.QueryParameter;
  */
 public class ClassSelector implements Describable<ClassSelector>, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**ID of the user*/
     final @CheckForNull String selectedClass;
 
@@ -63,12 +63,12 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {       
+    public boolean equals(Object obj) {
         if (obj instanceof ClassSelector) {
-            ClassSelector cmp = (ClassSelector)obj;
+            ClassSelector cmp = (ClassSelector) obj;
             return Objects.equals(selectedClass, cmp.selectedClass);
-        }           
-        return false;    
+        }
+        return false;
     }
 
     @Override
@@ -77,17 +77,18 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
         hash = 17 * hash + (selectedClass != null ? selectedClass.hashCode() : 0);
         return hash;
     }
-          
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends Descriptor<ClassSelector> {
-        
+
         @NonNull
         @Override
         public String getDisplayName() {
             return "N/A";
         }
-        
+
         public FormValidation doCheckSelectedClass(final @QueryParameter String selectedClass) {
             String _selectedClass = Util.fixEmptyAndTrim(selectedClass);
             if (_selectedClass == null) {

@@ -23,7 +23,6 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
-import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 import hudson.model.TopLevelItem;
 import java.io.IOException;
@@ -35,9 +34,8 @@ import org.jvnet.hudson.test.JenkinsRule;
  */
 public class JobRestrictionTestHelper {
 
-    private JobRestrictionTestHelper() {
-    }
-    
+    private JobRestrictionTestHelper() {}
+
     /**
      * Creates a job with specified cause restrictions.
      * @param <T> Class of the job to be created
@@ -45,17 +43,17 @@ public class JobRestrictionTestHelper {
      * @param type Type of the job for class automatch
      * @param restrictions Array of restrictions to be passed
      * @return Created project
-     * @throws IOException 
+     * @throws IOException
      */
-    public static <T extends TopLevelItem> T createJob(JenkinsRule j, Class<T> type, JobCauseRestriction ... restrictions) 
-            throws IOException {
+    public static <T extends TopLevelItem> T createJob(
+            JenkinsRule j, Class<T> type, JobCauseRestriction... restrictions) throws IOException {
         T job = j.jenkins.<T>createProject(type, "testProject");
-        //TODO: prettify conversion
+        // TODO: prettify conversion
         JobRestrictionPropertyBuider builder = JobRestrictionPropertyBuider.create();
         for (JobCauseRestriction r : restrictions) {
             builder.addCauseRestriction(r);
-        }            
-        builder.applyTo((Job)job);
+        }
+        builder.applyTo((Job) job);
         return job;
     }
 }

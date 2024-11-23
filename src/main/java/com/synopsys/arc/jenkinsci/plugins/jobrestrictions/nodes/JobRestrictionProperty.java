@@ -47,7 +47,7 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
     public JobRestrictionProperty(JobRestriction jobRestriction) {
         this.jobRestriction = jobRestriction;
     }
-    
+
     @Override
     public CauseOfBlockage canTake(Queue.BuildableItem item) {
         if (jobRestriction != null) {
@@ -55,20 +55,20 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
                 return JobRestrictionBlockageCause.DEFAULT;
             }
         }
-        
+
         // Can take
-        return null; 
+        return null;
     }
 
     public JobRestriction getJobRestriction() {
         return jobRestriction;
     }
-         
+
     @Extension
     public static class DescriptorImpl extends NodePropertyDescriptor {
         @Override
         public String getDisplayName() {
             return Messages.nodes_JobRestrictionProperty_DisplayName();
-        } 
+        }
     }
 }

@@ -39,7 +39,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  */
 public class MultipleOrJobRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
-    
+
     private final ArrayList<JobRestriction> restrictions;
 
     @DataBoundConstructor
@@ -50,7 +50,7 @@ public class MultipleOrJobRestriction extends JobRestriction {
     public ArrayList<JobRestriction> getRestrictions() {
         return restrictions;
     }
-    
+
     @Override
     public boolean canTake(Run run) {
         for (JobRestriction restriction : restrictions) {
@@ -75,7 +75,7 @@ public class MultipleOrJobRestriction extends JobRestriction {
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
-            return Messages.restrictions_Logic_Or() +" "+ Messages.restirctions_Stuff_MultipleSuffix();
+            return Messages.restrictions_Logic_Or() + " " + Messages.restirctions_Stuff_MultipleSuffix();
         }
     }
 }

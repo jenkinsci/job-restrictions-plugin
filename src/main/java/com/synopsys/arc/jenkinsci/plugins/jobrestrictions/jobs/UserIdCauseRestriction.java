@@ -34,7 +34,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Oleg Nenashev
  * @since 0.2
  */
-public class UserIdCauseRestriction extends JobCauseRestriction<Cause.UserIdCause>  {
+public class UserIdCauseRestriction extends JobCauseRestriction<Cause.UserIdCause> {
     boolean prohibitManualLaunch;
 
     @DataBoundConstructor
@@ -52,20 +52,20 @@ public class UserIdCauseRestriction extends JobCauseRestriction<Cause.UserIdCaus
             throw new AbortException(Messages.jobs_CauseRestrictions_UserID_prohibitedMessage());
         }
     }
-    
+
     @Override
     public DescriptorImpl getDescriptor() {
         return DESCRIPTOR;
     }
-    
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends JobCauseRestrictionDescriptor {
 
         @Override
         public String getDisplayName() {
             return Messages.jobs_CauseRestrictions_UserID_displayName();
         }
-        
     }
 }

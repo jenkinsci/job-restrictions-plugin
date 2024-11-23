@@ -24,7 +24,6 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-
 import hudson.model.Item;
 import hudson.model.Job;
 import hudson.model.Queue;
@@ -38,7 +37,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 @Restricted(NoExternalUse.class)
 public class QueueHelper {
 
-    //TODO: Optimize by StringBuilder
+    // TODO: Optimize by StringBuilder
     /**
      * Generates job-style project name for the buildable item
      * @deprecated Just a hack, will be removed in the future versions
@@ -64,7 +63,7 @@ public class QueueHelper {
 
     private static String getItemName(Queue.Task task) {
         if (task instanceof Item) {
-            Item stub = (Item)task;
+            Item stub = (Item) task;
             return stub.getFullName();
         } else {
             return task.getName();

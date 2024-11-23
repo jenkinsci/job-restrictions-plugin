@@ -23,9 +23,10 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
+import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
+
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
@@ -38,7 +39,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  */
 public class NotJobRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
-    
+
     JobRestriction restriction;
 
     @DataBoundConstructor
@@ -49,7 +50,7 @@ public class NotJobRestriction extends JobRestriction {
     public JobRestriction getRestriction() {
         return restriction;
     }
-    
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         return !restriction.canTake(item);

@@ -27,15 +27,15 @@ package io.jenkins.plugins.jobrestrictions.restrictions.job;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
-import io.jenkins.plugins.jobrestrictions.util.ClassSelector;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.Queue;
 import hudson.model.Run;
+import io.jenkins.plugins.jobrestrictions.util.ClassSelector;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -45,12 +45,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @since TODO
  */
 // TODO: it's a real issue, needs some love
-@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", 
+@SuppressFBWarnings(
+        value = "SE_NO_SERIALVERSIONID",
         justification = "XStream does actually need serialization, the code needs refactoring in 1.0")
 public class JobClassNameRestriction extends JobRestriction {
-    
-    private final List<ClassSelector> jobClasses; 
-    
+
+    private final List<ClassSelector> jobClasses;
+
     private transient Set<String> acceptedClassesHash = null;
 
     @DataBoundConstructor
@@ -62,8 +63,8 @@ public class JobClassNameRestriction extends JobRestriction {
     public List<ClassSelector> getJobClasses() {
         return jobClasses;
     }
-        
-    @NonNull 
+
+    @NonNull
     private synchronized Set<String> getAcceptedJobClasses() {
         if (acceptedClassesHash == null) {
             final List<ClassSelector> selectors = getJobClasses();
@@ -84,10 +85,10 @@ public class JobClassNameRestriction extends JobRestriction {
     public boolean canTake(Run run) {
         return getAcceptedJobClasses().contains(run.getParent().getClass().getName());
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
-        
+
         @Override
         public String getDisplayName() {
             return Messages.restrictions_Job_JobClassNameRestriction_displayName();

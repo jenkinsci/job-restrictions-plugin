@@ -25,6 +25,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.AbstractBuild;
@@ -35,8 +36,6 @@ import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
 import hudson.slaves.NodeProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * A {@link NodeProperty}, which manages {@link JobRestriction}s for {@link AbstractBuild}s.
@@ -56,31 +55,31 @@ public class JobRestrictionProperty extends JobProperty {
     public JobRestrictionPropertyConfig getConfig() {
         return config;
     }
-        
+
     @Override
     public boolean prebuild(AbstractBuild build, BuildListener listener) {
         // Consider build as valid if any cause is valid
-        for ( Object cause : build.getCauses() ) {
-           try {
-               validateCause((Cause)cause, listener);
-           } catch (AbortException ex) {
-               //TODO: Throw AbortedException upstairs after fix of https://issues.jenkins-ci.org/browse/JENKINS-19497
-               String message = "[Job Restrictions] - Build will be aborted: "+ex.getMessage();
-               listener.fatalError(message);
-               return false;
-           }
+        for (Object cause : build.getCauses()) {
+            try {
+                validateCause((Cause) cause, listener);
+            } catch (AbortException ex) {
+                // TODO: Throw AbortedException upstairs after fix of https://issues.jenkins-ci.org/browse/JENKINS-19497
+                String message = "[Job Restrictions] - Build will be aborted: " + ex.getMessage();
+                listener.fatalError(message);
+                return false;
+            }
         }
 
         // Build is valid
         return true;
     }
-    
-    private void validateCause(Cause cause, BuildListener listener) throws AbortException { 
-       if (config != null) {
-           config.validateCause(cause, listener);
-       }
+
+    private void validateCause(Cause cause, BuildListener listener) throws AbortException {
+        if (config != null) {
+            config.validateCause(cause, listener);
+        }
     }
-       
+
     @Extension
     public static class DescriptorImpl extends JobPropertyDescriptor {
         @Override
@@ -91,6 +90,6 @@ public class JobRestrictionProperty extends JobProperty {
         @Override
         public boolean isApplicable(Class<? extends Job> jobType) {
             return true;
-        }     
+        }
     }
 }

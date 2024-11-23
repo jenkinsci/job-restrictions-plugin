@@ -28,7 +28,7 @@ import hudson.model.Queue;
 import hudson.model.Run;
 
 /**
- * Provides logic wrapper for all expressions, 
+ * Provides logic wrapper for all expressions,
  * which don't utilize contents of RunnableItems.
  * @deprecated In the current state, this class is just a stub for future.
  * @author Oleg Nenashev
@@ -37,13 +37,14 @@ abstract class AbstractLogicExpression extends JobRestriction {
 
     @Override
     public boolean canTake(Run run) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    } 
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose Tools | Templates.
     }
-    
-    //TODO: add a generalized canTake method
+
+    // TODO: add a generalized canTake method
 }

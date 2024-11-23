@@ -32,6 +32,6 @@ import hudson.model.Descriptor;
  */
 public abstract class JobRestrictionDescriptor extends Descriptor<JobRestriction> {
     public JobRestrictionDescriptor getDefaultSettingsProvider() {
-        return (JobRestrictionDescriptor)JobRestriction.all().find(AnyJobRestriction.class);
-    } 
+        return (JobRestrictionDescriptor) JobRestriction.all().find(AnyJobRestriction.class);
+    }
 }

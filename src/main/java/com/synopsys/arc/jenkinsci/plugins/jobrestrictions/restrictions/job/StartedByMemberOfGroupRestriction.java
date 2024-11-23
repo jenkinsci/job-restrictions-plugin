@@ -23,31 +23,26 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
-import hudson.Extension;
-import hudson.model.User;
-import hudson.security.SecurityRealm;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
-
-import jenkins.model.Jenkins;
-
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
-import org.kohsuke.stapler.DataBoundConstructor;
-
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.GroupSelector;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Extension;
 import hudson.model.Queue;
+import hudson.model.User;
+import hudson.security.SecurityRealm;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import jenkins.model.Jenkins;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -60,7 +55,8 @@ import org.springframework.dao.DataAccessException;
  * @see StartedByUserRestriction
  */
 // TODO: it's a real issue, needs some love
-@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", 
+@SuppressFBWarnings(
+        value = "SE_NO_SERIALVERSIONID",
         justification = "XStream does actually need serialization, the code needs refactoring in 1.0")
 public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestriction {
 
@@ -69,8 +65,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
     private transient Set<String> acceptedGroups = null;
 
     @DataBoundConstructor
-    public StartedByMemberOfGroupRestriction(List<GroupSelector> groupList,
-            boolean checkUpstreamProjects) {
+    public StartedByMemberOfGroupRestriction(List<GroupSelector> groupList, boolean checkUpstreamProjects) {
         super(checkUpstreamProjects);
         this.groupList = groupList;
     }
@@ -122,7 +117,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
         if (usr == null) { // User is not registered in Jenkins (e.g. deleted)
             return getAuthoritiesFromRealm(userId);
         }
-         
+
         List<String> authorities = usr.getAuthorities();
         if (authorities.isEmpty()) {
             return getAuthoritiesFromRealm(userId);
@@ -140,7 +135,7 @@ public class StartedByMemberOfGroupRestriction extends AbstractUserCauseRestrict
 
         @CheckForNull UserDetails userDetails = null;
         try {
-            final SecurityRealm sr = instance.getSecurityRealm();   
+            final SecurityRealm sr = instance.getSecurityRealm();
             userDetails = sr.loadUserByUsername(userId);
         } catch (DataAccessException | UsernameNotFoundException ex) {
             // fallback to null handler

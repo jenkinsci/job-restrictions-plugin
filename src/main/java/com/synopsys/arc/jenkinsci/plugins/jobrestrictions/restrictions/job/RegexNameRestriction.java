@@ -42,10 +42,10 @@ import org.kohsuke.stapler.QueryParameter;
  */
 public class RegexNameRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
-    
+
     String regexExpression;
     boolean checkShortName;
-    
+
     @DataBoundConstructor
     public RegexNameRestriction(String regexExpression, boolean checkShortName) {
         this.regexExpression = regexExpression;
@@ -59,18 +59,18 @@ public class RegexNameRestriction extends JobRestriction {
     public boolean isCheckShortName() {
         return checkShortName;
     }
-    
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        //FIXME: switch to  the "getFullName" in the future
+        // FIXME: switch to  the "getFullName" in the future
         return canTake(QueueHelper.getFullName(item));
     }
-    
+
     @Override
     public boolean canTake(Run run) {
         return canTake(run.getParent().getFullName());
     }
-    
+
     public boolean canTake(String projectName) {
         try {
             return projectName.matches(regexExpression);
@@ -78,14 +78,14 @@ public class RegexNameRestriction extends JobRestriction {
             return true; // Ignore invalid pattern
         }
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
             return Messages.restrictions_Job_RegexName();
         }
-        
+
         public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
             try {
                 Pattern.compile(regexExpression);
