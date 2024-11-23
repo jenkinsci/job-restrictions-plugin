@@ -18,7 +18,8 @@
         <revision>0.9</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/job-restrictions-plugin</gitHubRepo>
-        <jenkins.version>2.361.4</jenkins.version>
+        <jenkins.baseline>2.361</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.4</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.threshold>Low</spotbugs.threshold>
     </properties>
@@ -67,7 +68,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.361.x</artifactId>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
                 <version>2102.v854b_fec19c92</version>
                 <scope>import</scope>
                 <type>pom</type>
