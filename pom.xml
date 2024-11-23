@@ -9,7 +9,7 @@
 
   <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
   <artifactId>job-restrictions</artifactId>
-  <version>{changelist}</version>
+  <version>${changelist}</version>
   <packaging>hpi</packaging>
   <name>Job Restrictions Plugin</name>
   <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
