@@ -12,7 +12,6 @@
   <version>${changelist}</version>
   <packaging>hpi</packaging>
   <name>Job Restrictions Plugin</name>
-  <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
   <url>https://github.com/jenkinsci/job-restrictions-plugin</url>
 
   <licenses>
