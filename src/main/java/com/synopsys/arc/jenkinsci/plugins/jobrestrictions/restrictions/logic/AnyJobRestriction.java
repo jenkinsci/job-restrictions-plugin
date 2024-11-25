@@ -39,9 +39,8 @@ public class AnyJobRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
-    public AnyJobRestriction() {
-    }
-    
+    public AnyJobRestriction() {}
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         return true;

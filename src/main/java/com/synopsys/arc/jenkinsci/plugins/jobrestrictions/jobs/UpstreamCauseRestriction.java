@@ -42,12 +42,11 @@ public class UpstreamCauseRestriction extends JobCauseRestriction<Cause.Upstream
     final boolean skipCheckForMissingInfo;
 
     @DataBoundConstructor
-    public UpstreamCauseRestriction(JobRestriction jobRestriction, 
-            boolean skipCheckForMissingInfo) {
+    public UpstreamCauseRestriction(JobRestriction jobRestriction, boolean skipCheckForMissingInfo) {
         this.jobRestriction = jobRestriction;
         this.skipCheckForMissingInfo = skipCheckForMissingInfo;
     }
-    
+
     public UpstreamCauseRestriction(JobRestriction jobRestriction) {
         this(jobRestriction, false);
     }
@@ -59,35 +58,35 @@ public class UpstreamCauseRestriction extends JobCauseRestriction<Cause.Upstream
     public boolean isSkipCheckForMissingInfo() {
         return skipCheckForMissingInfo;
     }
-    
+
     @Override
     public void validate(Cause.UpstreamCause cause) throws AbortException {
-       final Run upstreamRun = cause.getUpstreamRun();
-       if (upstreamRun == null) {
-           if (!skipCheckForMissingInfo) {
-               throw new AbortException("Upstream build info is missing");
-           } else {
-               return;
-           }
-       } 
-       if (jobRestriction != null && !jobRestriction.canTake(upstreamRun)) {
-           throw new AbortException("Job can't be executed due to upstream restrictions");
-       } 
+        final Run upstreamRun = cause.getUpstreamRun();
+        if (upstreamRun == null) {
+            if (!skipCheckForMissingInfo) {
+                throw new AbortException("Upstream build info is missing");
+            } else {
+                return;
+            }
+        }
+        if (jobRestriction != null && !jobRestriction.canTake(upstreamRun)) {
+            throw new AbortException("Job can't be executed due to upstream restrictions");
+        }
     }
 
     @Override
     public Descriptor<JobCauseRestriction<? extends Cause>> getDescriptor() {
         return DESCRIPTOR;
     }
-      
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends JobCauseRestrictionDescriptor {
 
         @Override
         public String getDisplayName() {
             return Messages.jobs_CauseRestrictions_Upstream();
         }
-        
     }
 }

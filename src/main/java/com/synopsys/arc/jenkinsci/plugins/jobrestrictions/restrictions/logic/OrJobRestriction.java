@@ -23,9 +23,10 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.logic;
 
+import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
+
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
-import static com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction.DEFAULT;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import hudson.Extension;
 import hudson.model.Queue;
@@ -56,12 +57,12 @@ public class OrJobRestriction extends JobRestriction {
     public JobRestriction getSecond() {
         return second;
     }
-    
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         return first.canTake(item) || second.canTake(item);
     }
-    
+
     @Override
     public boolean canTake(Run run) {
         return first.canTake(run) && second.canTake(run);
