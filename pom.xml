@@ -9,10 +9,9 @@
 
   <groupId>com.synopsys.arc.jenkinsci.plugins</groupId>
   <artifactId>job-restrictions</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${changelist}</version>
   <packaging>hpi</packaging>
   <name>Job Restrictions Plugin</name>
-  <description>This plugin allows restricting execution of jobs on nodes depending on criterias like name pattern and ownership</description>
   <url>https://github.com/jenkinsci/job-restrictions-plugin</url>
 
   <licenses>
@@ -32,6 +31,11 @@
         <role>maintainer</role>
       </roles>
     </developer>
+    <developer>
+      <id>mPokornyETM</id>
+      <name>Martin Pokorny</name>
+      <email>martin.pokorny@etm.at</email>
+    </developer>
   </developers>
 
   <scm>
@@ -42,13 +46,13 @@
   </scm>
 
   <properties>
-    <revision>0.9</revision>
-    <changelist>-SNAPSHOT</changelist>
-    <gitHubRepo>jenkinsci/job-restrictions-plugin</gitHubRepo>
-    <jenkins.baseline>2.361</jenkins.baseline>
-    <jenkins.version>${jenkins.baseline}.4</jenkins.version>
+    <changelist>999999-SNAPSHOT</changelist>
+    <jenkins.baseline>2.462</jenkins.baseline>
+    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+    <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <spotbugs.effort>Max</spotbugs.effort>
     <spotbugs.threshold>Low</spotbugs.threshold>
+    <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
   <dependencyManagement>
@@ -56,7 +60,7 @@
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
         <artifactId>bom-${jenkins.baseline}.x</artifactId>
-        <version>2102.v854b_fec19c92</version>
+        <version>3722.vcc62e7311580</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
