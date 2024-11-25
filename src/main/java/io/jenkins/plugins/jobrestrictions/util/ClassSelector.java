@@ -92,6 +92,7 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
 
         @RequirePOST
         public FormValidation doCheckSelectedClass(final @QueryParameter String selectedClass) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             String _selectedClass = Util.fixEmptyAndTrim(selectedClass);
             if (_selectedClass == null) {
                 return FormValidation.error("Field is empty");
