@@ -41,6 +41,7 @@ import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -96,7 +97,9 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
             return "N/A";
         }
 
+        @RequirePOST
         public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
             SecurityRealm sr = Jenkins.get().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
