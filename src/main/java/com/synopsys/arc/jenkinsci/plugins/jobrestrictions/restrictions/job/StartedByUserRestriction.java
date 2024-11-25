@@ -27,13 +27,13 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.UserSelector;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -42,22 +42,27 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @since 0.4
  */
 // TODO: it's a real issue, needs some love
-@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", 
+@SuppressFBWarnings(
+        value = "SE_NO_SERIALVERSIONID",
         justification = "XStream does actually need serialization, the code needs refactoring in 1.0")
 public class StartedByUserRestriction extends AbstractUserCauseRestriction {
-    
-    private final List<UserSelector> usersList; 
-    
+
+    private final List<UserSelector> usersList;
+
     /**
      * @deprecated Not implemented
      */
     private final @Deprecated boolean acceptAutomaticRuns;
+
     private final boolean acceptAnonymousUsers;
     private transient Set<String> acceptedUsers = null;
 
     @DataBoundConstructor
-    public StartedByUserRestriction(List<UserSelector> usersList, boolean checkUpstreamProjects, 
-            boolean acceptAutomaticRuns, boolean acceptAnonymousUsers) {
+    public StartedByUserRestriction(
+            List<UserSelector> usersList,
+            boolean checkUpstreamProjects,
+            boolean acceptAutomaticRuns,
+            boolean acceptAnonymousUsers) {
         super(checkUpstreamProjects);
         this.usersList = usersList;
         this.acceptAutomaticRuns = acceptAutomaticRuns;
@@ -71,11 +76,11 @@ public class StartedByUserRestriction extends AbstractUserCauseRestriction {
     public @Deprecated boolean isAcceptAutomaticRuns() {
         return acceptAutomaticRuns;
     }
-    
+
     public boolean isAcceptAnonymousUsers() {
         return acceptAnonymousUsers;
     }
-        
+
     private synchronized @NonNull Set<String> getAcceptedUsers() {
         if (acceptedUsers == null) {
             final List<UserSelector> selectors = getUsersList();
@@ -86,17 +91,15 @@ public class StartedByUserRestriction extends AbstractUserCauseRestriction {
         }
         return acceptedUsers;
     }
-    
+
     @Override
     protected boolean acceptsUser(@CheckForNull String userId) {
-        return userId == null
-                ? acceptAnonymousUsers
-                : getAcceptedUsers().contains(userId);
+        return userId == null ? acceptAnonymousUsers : getAcceptedUsers().contains(userId);
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
-        
+
         @Override
         public String getDisplayName() {
             return Messages.restrictions_Job_StartedByUserRestriction_displayName();
