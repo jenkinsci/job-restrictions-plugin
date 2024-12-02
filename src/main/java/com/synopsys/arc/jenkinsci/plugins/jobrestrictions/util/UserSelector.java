@@ -32,10 +32,12 @@ import hudson.model.User;
 import hudson.util.FormValidation;
 import java.io.Serializable;
 import java.util.Objects;
+import jenkins.model.Jenkins;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 /**
  * Describable Item, which allows to configure a user.
@@ -91,7 +93,9 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
         }
 
         @Restricted(NoExternalUse.class) // Stapler only
+        @RequirePOST
         public FormValidation doCheckSelectedUserId(@QueryParameter String selectedUserId) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             selectedUserId = Util.fixEmptyAndTrim(selectedUserId);
             if (selectedUserId == null) {
                 return FormValidation.error("Field is empty");

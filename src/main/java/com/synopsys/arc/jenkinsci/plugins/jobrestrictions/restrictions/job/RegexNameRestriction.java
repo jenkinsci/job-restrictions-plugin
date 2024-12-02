@@ -33,8 +33,10 @@ import hudson.model.Run;
 import hudson.util.FormValidation;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 /**
  * Restricts the jobs execution by applying regular expressions to their names.
@@ -86,7 +88,9 @@ public class RegexNameRestriction extends JobRestriction {
             return Messages.restrictions_Job_RegexName();
         }
 
+        @RequirePOST
         public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             try {
                 Pattern.compile(regexExpression);
             } catch (PatternSyntaxException exception) {

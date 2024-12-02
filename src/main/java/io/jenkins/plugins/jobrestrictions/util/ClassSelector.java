@@ -35,6 +35,7 @@ import java.util.Objects;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 /**
  * Describable Item, which allows to select class.
@@ -89,7 +90,9 @@ public class ClassSelector implements Describable<ClassSelector>, Serializable {
             return "N/A";
         }
 
+        @RequirePOST
         public FormValidation doCheckSelectedClass(final @QueryParameter String selectedClass) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             String _selectedClass = Util.fixEmptyAndTrim(selectedClass);
             if (_selectedClass == null) {
                 return FormValidation.error("Field is empty");
