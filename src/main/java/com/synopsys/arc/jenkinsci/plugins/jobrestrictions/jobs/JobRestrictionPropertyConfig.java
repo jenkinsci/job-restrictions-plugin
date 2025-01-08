@@ -23,13 +23,13 @@
  */
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -42,8 +42,7 @@ public class JobRestrictionPropertyConfig implements Describable<JobRestrictionP
 
     @DataBoundConstructor
     public JobRestrictionPropertyConfig(
-            UpstreamCauseRestriction upstreamCauseRestriction,
-            UserIdCauseRestriction userIdCauseRestriction) {
+            UpstreamCauseRestriction upstreamCauseRestriction, UserIdCauseRestriction userIdCauseRestriction) {
         this.upstreamCauseRestriction = upstreamCauseRestriction;
         this.userIdCauseRestriction = userIdCauseRestriction;
     }
@@ -57,30 +56,30 @@ public class JobRestrictionPropertyConfig implements Describable<JobRestrictionP
     }
 
     public void validateCause(@NonNull Cause cause, @NonNull BuildListener listener) throws AbortException {
-       if (upstreamCauseRestriction != null && cause instanceof Cause.UpstreamCause) {
-           upstreamCauseRestriction.validate((Cause.UpstreamCause)cause);
-       }    
-       
-       if (userIdCauseRestriction != null && cause instanceof Cause.UserIdCause) {
-           userIdCauseRestriction.validate((Cause.UserIdCause)cause);
-       }
-       //TODO: checks
-       
+        if (upstreamCauseRestriction != null && cause instanceof Cause.UpstreamCause) {
+            upstreamCauseRestriction.validate((Cause.UpstreamCause) cause);
+        }
+
+        if (userIdCauseRestriction != null && cause instanceof Cause.UserIdCause) {
+            userIdCauseRestriction.validate((Cause.UserIdCause) cause);
+        }
+        // TODO: checks
+
     }
 
     @Override
     public Descriptor<JobRestrictionPropertyConfig> getDescriptor() {
         return DESCRIPTOR;
     }
-    
+
     @Extension
     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
     public static class DescriptorImpl extends Descriptor<JobRestrictionPropertyConfig> {
 
         @Override
         public String getDisplayName() {
             return "Job restriction property config";
         }
-        
     }
 }

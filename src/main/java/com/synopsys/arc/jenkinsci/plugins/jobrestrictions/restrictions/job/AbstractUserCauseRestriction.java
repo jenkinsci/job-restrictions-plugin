@@ -25,6 +25,8 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.job;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Action;
 import hudson.model.Cause;
 import hudson.model.CauseAction;
@@ -32,8 +34,6 @@ import hudson.model.Queue;
 import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.List;
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Abstract class, which defines the logic of UserCause-based restrictions.
@@ -44,7 +44,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  * @see StartedByMemberOfGroupRestriction
  */
 public abstract class AbstractUserCauseRestriction extends JobRestriction {
-    
+
     /**
      * Enables the check of upstream projects
      */
@@ -57,32 +57,32 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public final boolean isCheckUpstreamProjects() {
         return checkUpstreamProjects;
     }
-    
+
     /**
      * Check if the method accepts the specified user.
      * The user will be automatically extracted by the logic in {@link AbstractUserCauseRestriction}.
      * @param userId User id
      * @return true if the restriction accepts the user
      */
-    abstract protected boolean acceptsUser(@CheckForNull String userId); 
-    
+    protected abstract boolean acceptsUser(@CheckForNull String userId);
+
     /* package */ boolean canTake(@NonNull List<Cause> causes) {
         boolean userIdCause = false;
         boolean rebuildCause = false;
         boolean upstreamCause = false;
-        
+
         boolean aUserIdWasNotAccepted = false;
         boolean userIdCauseExists = false;
-        
-        for (@CheckForNull Cause cause : causes) { 
+
+        for (@CheckForNull Cause cause : causes) {
             if (cause == null) {
                 continue; // Protection from the bug in old core versions
             }
-                   
+
             // Check user causes
             if (cause.getClass().equals(Cause.UserIdCause.class) && !aUserIdWasNotAccepted) {
                 userIdCauseExists = true;
-                //if several userIdCauses exists, be defensive and don't allow if one is not accepted.
+                // if several userIdCauses exists, be defensive and don't allow if one is not accepted.
                 final @CheckForNull String startedBy = ((Cause.UserIdCause) cause).getUserId();
                 if (acceptsUser(startedBy)) {
                     userIdCause = true;
@@ -91,7 +91,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
                     userIdCause = false;
                 }
             }
-                      
+
             // Check upstream projects if required
             if (checkUpstreamProjects && cause.getClass().equals(Cause.UpstreamCause.class)) {
                 final List<Cause> upstreamCauses = ((Cause.UpstreamCause) cause).getUpstreamCauses();
@@ -104,10 +104,10 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             // TODO: Check rebuild causes
         }
 
-        //userId has preceedence
+        // userId has preceedence
         if (userIdCauseExists) {
             return userIdCause;
-        } else { //If no update cause exists we should also return false...
+        } else { // If no update cause exists we should also return false...
             return upstreamCause;
         }
     }
@@ -122,7 +122,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
             if (action instanceof CauseAction) {
                 CauseAction causeAction = (CauseAction) action;
                 causes.addAll(causeAction.getCauses());
-            } 
+            }
         }
         return canTake(causes);
     }

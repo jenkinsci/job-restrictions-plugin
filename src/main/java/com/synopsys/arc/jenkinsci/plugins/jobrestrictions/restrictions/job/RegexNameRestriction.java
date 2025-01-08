@@ -33,8 +33,10 @@ import hudson.model.Run;
 import hudson.util.FormValidation;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 /**
  * Restricts the jobs execution by applying regular expressions to their names.
@@ -42,10 +44,10 @@ import org.kohsuke.stapler.QueryParameter;
  */
 public class RegexNameRestriction extends JobRestriction {
     private static final long serialVersionUID = 1L;
-    
+
     String regexExpression;
     boolean checkShortName;
-    
+
     @DataBoundConstructor
     public RegexNameRestriction(String regexExpression, boolean checkShortName) {
         this.regexExpression = regexExpression;
@@ -59,18 +61,18 @@ public class RegexNameRestriction extends JobRestriction {
     public boolean isCheckShortName() {
         return checkShortName;
     }
-    
+
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        //FIXME: switch to  the "getFullName" in the future
+        // FIXME: switch to  the "getFullName" in the future
         return canTake(QueueHelper.getFullName(item));
     }
-    
+
     @Override
     public boolean canTake(Run run) {
         return canTake(run.getParent().getFullName());
     }
-    
+
     public boolean canTake(String projectName) {
         try {
             return projectName.matches(regexExpression);
@@ -78,15 +80,17 @@ public class RegexNameRestriction extends JobRestriction {
             return true; // Ignore invalid pattern
         }
     }
-    
+
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
         @Override
         public String getDisplayName() {
             return Messages.restrictions_Job_RegexName();
         }
-        
+
+        @RequirePOST
         public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             try {
                 Pattern.compile(regexExpression);
             } catch (PatternSyntaxException exception) {
