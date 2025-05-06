@@ -14,7 +14,7 @@ public class JobRestrictionPropertyBuider {
     private final List<JobCauseRestriction> causeRestrictions;
 
     private JobRestrictionPropertyBuider() {
-        causeRestrictions = new LinkedList<JobCauseRestriction>();
+        causeRestrictions = new LinkedList<>();
     }
 
     @NonNull
