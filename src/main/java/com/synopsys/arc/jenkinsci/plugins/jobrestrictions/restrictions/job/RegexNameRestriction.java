@@ -27,13 +27,13 @@ import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionDescriptor;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util.QueueHelper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Queue;
 import hudson.model.Run;
 import hudson.util.FormValidation;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.interceptor.RequirePOST;
@@ -83,6 +83,7 @@ public class RegexNameRestriction extends JobRestriction {
 
     @Extension
     public static class DescriptorImpl extends JobRestrictionDescriptor {
+        @NonNull
         @Override
         public String getDisplayName() {
             return Messages.restrictions_Job_RegexName();
@@ -90,7 +91,6 @@ public class RegexNameRestriction extends JobRestriction {
 
         @RequirePOST
         public FormValidation doCheckRegexExpression(@QueryParameter String regexExpression) {
-            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             try {
                 Pattern.compile(regexExpression);
             } catch (PatternSyntaxException exception) {

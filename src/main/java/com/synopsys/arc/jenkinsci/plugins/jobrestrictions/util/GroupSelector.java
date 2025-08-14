@@ -24,11 +24,13 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Functions;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import hudson.model.Item;
 import hudson.security.GroupDetails;
 import hudson.security.SecurityRealm;
 import hudson.security.UserMayOrMayNotExistException;
@@ -38,7 +40,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import jenkins.model.Jenkins;
 import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.interceptor.RequirePOST;
@@ -73,8 +75,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof GroupSelector) {
-            GroupSelector cmp = (GroupSelector) obj;
+        if (obj instanceof GroupSelector cmp) {
             return Objects.equals(selectedGroupId, cmp.selectedGroupId);
         }
         return false;
@@ -92,14 +93,15 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
 
     public static class DescriptorImpl extends Descriptor<GroupSelector> {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return "N/A";
         }
 
         @RequirePOST
-        public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId) {
-            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+        public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId, @AncestorInPath Item item) {
+            item.checkPermission(Item.CONFIGURE);
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
             SecurityRealm sr = Jenkins.get().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
@@ -119,11 +121,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
             } catch (UserMayOrMayNotExistException e) {
                 // undecidable, meaning the group may exist
                 return FormValidation.respond(Kind.OK, eSelectedGroupId);
-            } catch (UsernameNotFoundException e) {
-                // fall through next
-            } catch (DataAccessException e) {
-                // fall through next
-            } catch (AuthenticationException e) {
+            } catch (DataAccessException | AuthenticationException e) {
                 // fall through next
             }
             return FormValidation.warning("Group " + selectedGroupId + " is not registered in Jenkins");
