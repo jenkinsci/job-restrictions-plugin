@@ -115,7 +115,10 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     @Override
     public boolean canTake(Queue.BuildableItem item) {
         final List<Cause> causes = new ArrayList<>();
-        for (Action action : item.getActions()) {
+
+        // Even if the item is a PlaceHolder task, we give it a chance to contribute the actions
+        // Right now an empty list is retrieved in this case
+        for (Action action : item.getAllActions()) {
             if (action instanceof CauseAction) {
                 CauseAction causeAction = (CauseAction) action;
                 causes.addAll(causeAction.getCauses());
