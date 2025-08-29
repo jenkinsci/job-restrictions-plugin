@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Functions;
 import hudson.Util;
+import hudson.model.Computer;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Item;
@@ -102,7 +103,7 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         @RequirePOST
         public FormValidation doCheckSelectedGroupId(
                 @QueryParameter String selectedGroupId, @AncestorInPath Item item) {
-            item.checkPermission(Item.CONFIGURE);
+            item.checkPermission(Computer.CONFIGURE);
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
             SecurityRealm sr = Jenkins.get().getSecurityRealm();
             String eSelectedGroupId = Functions.escape(selectedGroupId);
