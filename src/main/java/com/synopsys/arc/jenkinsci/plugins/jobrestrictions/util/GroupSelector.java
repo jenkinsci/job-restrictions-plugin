@@ -100,7 +100,8 @@ public class GroupSelector implements Describable<GroupSelector>, Serializable {
         }
 
         @RequirePOST
-        public FormValidation doCheckSelectedGroupId(@QueryParameter String selectedGroupId, @AncestorInPath Item item) {
+        public FormValidation doCheckSelectedGroupId(
+                @QueryParameter String selectedGroupId, @AncestorInPath Item item) {
             item.checkPermission(Item.CONFIGURE);
             selectedGroupId = Util.fixEmptyAndTrim(selectedGroupId);
             SecurityRealm sr = Jenkins.get().getSecurityRealm();
