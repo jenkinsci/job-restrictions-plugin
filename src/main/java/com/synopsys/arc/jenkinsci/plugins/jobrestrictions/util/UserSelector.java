@@ -24,6 +24,7 @@
 package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.util;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Describable;
@@ -68,8 +69,7 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof UserSelector) {
-            UserSelector cmp = (UserSelector) obj;
+        if (obj instanceof UserSelector cmp) {
             return Objects.equals(selectedUserId, cmp.selectedUserId);
         }
         return false;
@@ -87,6 +87,7 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
 
     public static class DescriptorImpl extends Descriptor<UserSelector> {
 
+        @NonNull
         @Override
         public String getDisplayName() {
             return "N/A";
@@ -95,7 +96,7 @@ public class UserSelector implements Describable<UserSelector>, Serializable {
         @Restricted(NoExternalUse.class) // Stapler only
         @RequirePOST
         public FormValidation doCheckSelectedUserId(@QueryParameter String selectedUserId) {
-            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            Jenkins.get().checkPermission(Jenkins.READ);
             selectedUserId = Util.fixEmptyAndTrim(selectedUserId);
             if (selectedUserId == null) {
                 return FormValidation.error("Field is empty");
