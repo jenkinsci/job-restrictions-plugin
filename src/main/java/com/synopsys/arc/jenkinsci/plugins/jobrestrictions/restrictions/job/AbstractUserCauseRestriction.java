@@ -116,8 +116,7 @@ public abstract class AbstractUserCauseRestriction extends JobRestriction {
     public boolean canTake(Queue.BuildableItem item) {
         final List<Cause> causes = new ArrayList<>();
         for (Action action : item.getActions()) {
-            if (action instanceof CauseAction) {
-                CauseAction causeAction = (CauseAction) action;
+            if (action instanceof CauseAction causeAction) {
                 causes.addAll(causeAction.getCauses());
             }
         }
