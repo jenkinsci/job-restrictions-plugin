@@ -62,8 +62,7 @@ public class QueueHelper {
     }
 
     private static String getItemName(Queue.Task task) {
-        if (task instanceof Item) {
-            Item stub = (Item) task;
+        if (task instanceof Item stub) {
             return stub.getFullName();
         } else {
             return task.getName();

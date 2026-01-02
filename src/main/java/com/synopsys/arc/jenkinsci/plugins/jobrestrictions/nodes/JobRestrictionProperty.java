@@ -26,6 +26,7 @@ package com.synopsys.arc.jenkinsci.plugins.jobrestrictions.nodes;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.Messages;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestriction;
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.restrictions.JobRestrictionBlockageCause;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Node;
 import hudson.model.Queue;
@@ -66,6 +67,7 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
 
     @Extension
     public static class DescriptorImpl extends NodePropertyDescriptor {
+        @NonNull
         @Override
         public String getDisplayName() {
             return Messages.nodes_JobRestrictionProperty_DisplayName();
