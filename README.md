@@ -45,6 +45,10 @@ The current version supports the following checks:
     requirements
 -   Prohibit manual launch of the job (since 0.2)
 
+## Queue Performance
+
+The plugin caches `canTake` results to reduce repeated work during queue scheduling. See [docs/QUEUE_PERFORMANCE.md](docs/QUEUE_PERFORMANCE.md) for details.
+
 ## Extension points
 
 Plugin provides a `JobRestriction` extension point which allows implementing new restrictions.
