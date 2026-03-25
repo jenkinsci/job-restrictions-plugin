@@ -78,7 +78,8 @@ public class JobClassNameRestriction extends JobRestriction {
 
     @Override
     public boolean canTake(Queue.BuildableItem item) {
-        return getAcceptedJobClasses().contains(item.task.getClass().getName());
+        String taskClassName = item.task.getClass().getName();
+        return getAcceptedJobClasses().contains(taskClassName);
     }
 
     @Override
