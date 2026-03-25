@@ -53,14 +53,14 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
     /** Restriction according to buildable item requirements */
     JobRestriction jobRestriction;
 
-    private static final boolean CACHE_DISABLED = Boolean.getBoolean(
-            JobRestrictionProperty.class.getName() + ".cacheDisabled");
+    private static final boolean CACHE_DISABLED =
+            Boolean.getBoolean(JobRestrictionProperty.class.getName() + ".cacheDisabled");
 
-    private static final long CACHE_TTL_MS = Long.getLong(
-            JobRestrictionProperty.class.getName() + ".cacheTtlMs", 30_000);
+    private static final long CACHE_TTL_MS =
+            Long.getLong(JobRestrictionProperty.class.getName() + ".cacheTtlMs", 30_000);
 
-    private static final int CACHE_MAX_ENTRIES = Integer.getInteger(
-            JobRestrictionProperty.class.getName() + ".cacheMaxEntries", 500);
+    private static final int CACHE_MAX_ENTRIES =
+            Integer.getInteger(JobRestrictionProperty.class.getName() + ".cacheMaxEntries", 500);
 
     /**
      * Must be transient: XStream deserializes NodeProperty bypassing constructors
@@ -123,8 +123,9 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
 
     private CauseOfBlockage computeCanTake(Queue.BuildableItem item) {
         boolean allow = jobRestriction.canTake(item);
-        LOG.log(Level.FINE, "[JobRestrictionProperty] computeCanTake restriction={0} result={1}",
-                new Object[]{jobRestriction.getClass().getSimpleName(), allow ? "ALLOW" : "BLOCK"});
+        LOG.log(Level.FINE, "[JobRestrictionProperty] computeCanTake restriction={0} result={1}", new Object[] {
+            jobRestriction.getClass().getSimpleName(), allow ? "ALLOW" : "BLOCK"
+        });
         return allow ? null : JobRestrictionBlockageCause.DEFAULT;
     }
 
@@ -152,6 +153,7 @@ public class JobRestrictionProperty extends NodeProperty<Node> {
     private static final class CachedResult {
         @CheckForNull
         final CauseOfBlockage causeOfBlockage;
+
         final long timestampMs;
 
         CachedResult(CauseOfBlockage causeOfBlockage, long timestampMs) {
