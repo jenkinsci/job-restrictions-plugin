@@ -28,30 +28,35 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.synopsys.arc.jenkinsci.plugins.jobrestrictions.nodes.JobRestrictionProperty;
 import hudson.matrix.MatrixProject;
-import hudson.model.Action;
 import hudson.model.FreeStyleProject;
 import hudson.model.Queue;
 import io.jenkins.plugins.jobrestrictions.util.ClassSelector;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests of {@link JobClassNameRestriction}.
  * @author Oleg Nenashev
  */
 @Issue("JENKINS-38644")
-public class JobClassNameRestrictionTest {
+@WithJenkins
+class JobClassNameRestrictionTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+    private JenkinsRule j;
+
+    @BeforeEach
+    void setUp(JenkinsRule rule) {
+        j = rule;
+    }
 
     @Test
-    public void shouldRestrictJobClass() throws Exception {
+    void shouldRestrictJobClass() throws Exception {
         JobClassNameRestriction jobClassNameRestriction =
                 new JobClassNameRestriction(List.of(new ClassSelector(FreeStyleProject.class.getName())));
         JobRestrictionProperty prop = new JobRestrictionProperty(jobClassNameRestriction);
@@ -64,14 +69,14 @@ public class JobClassNameRestrictionTest {
     }
 
     private void assertCanTake(JobRestrictionProperty prop, Queue.Task task) {
-        Queue.BuildableItem item = new Queue.BuildableItem(
-                new Queue.WaitingItem(Calendar.getInstance(), task, Collections.<Action>emptyList()));
+        Queue.BuildableItem item =
+                new Queue.BuildableItem(new Queue.WaitingItem(Calendar.getInstance(), task, Collections.emptyList()));
         assertThat("Job Restriction Property should accept " + task.getClass(), prop.canTake(item), nullValue());
     }
 
     private void assertCannotTake(JobRestrictionProperty prop, Queue.Task task) {
-        Queue.BuildableItem item = new Queue.BuildableItem(
-                new Queue.WaitingItem(Calendar.getInstance(), task, Collections.<Action>emptyList()));
+        Queue.BuildableItem item =
+                new Queue.BuildableItem(new Queue.WaitingItem(Calendar.getInstance(), task, Collections.emptyList()));
         assertThat("Job Restriction Property should not accept " + task.getClass(), prop.canTake(item), notNullValue());
     }
 }

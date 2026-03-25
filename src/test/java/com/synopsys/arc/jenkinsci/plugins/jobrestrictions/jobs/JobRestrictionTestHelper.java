@@ -47,7 +47,7 @@ public class JobRestrictionTestHelper {
      */
     public static <T extends TopLevelItem> T createJob(
             JenkinsRule j, Class<T> type, JobCauseRestriction... restrictions) throws IOException {
-        T job = j.jenkins.<T>createProject(type, "testProject");
+        T job = j.jenkins.createProject(type, "testProject");
         // TODO: prettify conversion
         JobRestrictionPropertyBuider builder = JobRestrictionPropertyBuider.create();
         for (JobCauseRestriction r : restrictions) {
